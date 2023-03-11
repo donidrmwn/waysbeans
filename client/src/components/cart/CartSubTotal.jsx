@@ -1,10 +1,30 @@
+import { useState } from 'react';
 import { Col, Container, Button } from 'react-bootstrap'
+import { useNavigate } from 'react-router';
 import { ConvertFormatRupiah } from "../../utils";
+import ModalShipping from '../modal/ModalShipping';
+import ModalSuccessShipping from "../modal/ModalSuccessShipping";
 
 
-export default function CartSubTotal({transaction}) {
-  
-  
+export default function CartSubTotal({ transaction }) {
+    let navigate = useNavigate();
+    const [showShipping, setShowShipping] = useState(null)
+    const [showSuccess, setShowsuccess] = useState(null)
+    const handleShowShipping = () => setShowShipping(true)
+    const handleCloseShipping = () => setShowShipping(false)
+
+    const handleCloseSuccess = () => {
+        setShowsuccess(false)
+        navigate('/profile');
+
+    }
+
+    const popSuccess = () => {
+        setShowsuccess(true)
+        setShowShipping(false)
+    }
+
+
     return (
         <>
             <hr />
@@ -35,9 +55,18 @@ export default function CartSubTotal({transaction}) {
 
             <Col className=" p-0 d-flex justify-content-end">
                 <Button
-                    onClick={() => this.handleOnSubmit()}
+                    onClick={handleShowShipping}
                     className="w-100 fs-4 main-button">Pay</Button>
             </Col>
+            <ModalShipping
+                show={showShipping}
+                onHide={handleCloseShipping}
+                handleSuccess={popSuccess}
+            />
+            <ModalSuccessShipping
+                show={showSuccess}
+                onHide={handleCloseSuccess}
+            />
         </>
     )
 }

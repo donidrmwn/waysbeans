@@ -38,7 +38,7 @@ export default function Navibar() {
     });
 
     useEffect(() =>{
-      
+       
         window.addEventListener('badge', () => {
             refetch()
         })

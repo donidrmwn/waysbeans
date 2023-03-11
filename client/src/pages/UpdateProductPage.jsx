@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
 
-import { useMutation, useQuery } from 'react-query';
+import { useMutation } from 'react-query';
 import { useNavigate, useParams } from 'react-router';
 import { API } from "../config/api";
 import { Col, Container, Row, Form, Image, Button } from "react-bootstrap";
@@ -36,13 +36,9 @@ const style = {
 export default function UpdateProductPage() {
     const title = 'Update Product';
     document.title = 'Waysbeans | ' + title;
-    const [isLoading, setIsLoading] = useState(true);
+    // const [isLoading, setIsLoading] = useState(true);
     let navigate = useNavigate();
     let { id } = useParams();
-    let { data: product } = useQuery('productDetailCache', async () => {
-        const response = await API.get('/product/' + id);
-        return response.data.data
-    });
 
     const [preview, setPreview] = useState(null); //For image preview
     const [form, setForm] = useState({
@@ -64,7 +60,7 @@ export default function UpdateProductPage() {
             stock: responseProduct.data.data.stock,
             image: responseProduct.data.data.image
         });
-        setIsLoading(false)
+       // setIsLoading(false)
     }
 
     useEffect(() => {

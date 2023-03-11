@@ -17,6 +17,7 @@ import ProductListPage from './pages/ProductListPage';
 import UpdateProductPage from './pages/UpdateProductPage';
 import CartPage from './pages/CartPage';
 import { useQuery } from 'react-query';
+import Shipping from './components/transaction/Shipping';
 
 
 function App() {
@@ -39,11 +40,11 @@ function App() {
 
   useEffect(() => {
     if (localStorage.token) {
-      setAuthToken(localStorage.token);
-      
-      checkUser();
      
+      setAuthToken(localStorage.token);
+      checkUser();
     } else {
+     
       setIsLoading(false);
     }
 
@@ -72,7 +73,6 @@ function App() {
       setIsLoading(false)
     }
   };
-
 
 
 

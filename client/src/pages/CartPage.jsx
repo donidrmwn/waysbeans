@@ -5,8 +5,11 @@ import { API } from '../config/api';
 import { Row, Col, Container, Button } from 'react-bootstrap'
 import CartSubTotal from "../components/cart/CartSubTotal";
 import { useNavigate } from "react-router";
+import ModalShipping from "../components/modal/ModalShipping"
 
 export default function CartPage() {
+    
+    
     const [cart, setCart] = useState(false)
     let navigate = useNavigate();
     let { data: carts, refetch: refetchCarts } = useQuery("cartsListCache", async () => {
@@ -67,6 +70,7 @@ export default function CartPage() {
 
 
     useEffect(() => {
+        
         if (cart) {
             updateCart.mutate(cart.id)
         }
@@ -104,6 +108,7 @@ export default function CartPage() {
                 }
             </Container>
 
+            
         </>
     )
 }

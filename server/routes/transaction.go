@@ -26,6 +26,6 @@ func TransactionRoutes(e *echo.Group) {
 	e.GET("/transactions/unfinished", middleware.Auth(h.GetUncheckedOutTransaction))
 	e.GET("/transaction/:id", h.GetTransaction)
 	e.POST("/transaction", middleware.Auth(h.CreateTransaction))
-	e.PATCH("/transaction", middleware.Auth(middleware.UploadFile((h.UpdateTransaction), "attachment")))
+	e.PATCH("/transaction", middleware.Auth((h.UpdateTransaction)))
 	e.DELETE("/transaction/:id", h.DeleteTransaction)
 }

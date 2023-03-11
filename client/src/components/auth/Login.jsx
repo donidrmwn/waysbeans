@@ -53,7 +53,7 @@ export default function Login({ onHide }) {
                 </Alert>
             );
             setMessage(alert);
-            onHide()
+            onHide();
         } catch (error) {
             const alert = (
                 <Alert variant='danger' className='py-1'>

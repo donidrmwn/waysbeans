@@ -34,15 +34,14 @@ func HandlerTransaction(
 }
 func convertResponseTransaction(u models.Transaction) transactiondto.TransactionResponse {
 	return transactiondto.TransactionResponse{
-		ID:         u.ID,
-		User:       u.User,
-		Name:       u.Name,
-		Email:      u.Email,
-		Phone:      u.Phone,
-		Address:    u.Address,
-		Attachment: u.Attachment,
-		Status:     u.Status,
-		Cart:       u.Cart,
+		ID:      u.ID,
+		User:    u.User,
+		Name:    u.Name,
+		Email:   u.Email,
+		Phone:   u.Phone,
+		Address: u.Address,
+		Status:  u.Status,
+		Cart:    u.Cart,
 	}
 
 }
@@ -179,15 +178,14 @@ func (h *handlerTransaction) CreateTransaction(c echo.Context) error {
 	}
 	if transaction.ID == 0 {
 		transaction = models.Transaction{
-			UserID:     int(userID),
-			ID:         transactionId,
-			Name:       request.Name,
-			Email:      request.Email,
-			Phone:      request.Phone,
-			PostCode:   request.PostCode,
-			Address:    request.Address,
-			Attachment: request.Attachment,
-			Status:     request.Status,
+			UserID:   int(userID),
+			ID:       transactionId,
+			Name:     request.Name,
+			Email:    request.Email,
+			Phone:    request.Phone,
+			PostCode: request.PostCode,
+			Address:  request.Address,
+			Status:   request.Status,
 		}
 
 		data, err := h.TransactionRepository.CreateTransaction(transaction)
@@ -209,19 +207,17 @@ func (h *handlerTransaction) CreateTransaction(c echo.Context) error {
 }
 
 func (h *handlerTransaction) UpdateTransaction(c echo.Context) error {
-	dataFile := c.Get("dataFile").(string)
-	fmt.Println("THIS IS DATA FILE !", dataFile)
+
 	userLogin := c.Get("userLogin")
 	userID := userLogin.(jwt.MapClaims)["id"].(float64)
 	request := transactiondto.CreateTransactionRequest{
 
-		Name:       c.FormValue("name"),
-		Email:      c.FormValue("email"),
-		Phone:      c.FormValue("phone"),
-		PostCode:   c.FormValue("post_code"),
-		Address:    c.FormValue("address"),
-		Attachment: dataFile,
-		Status:     "Waiting For Verification",
+		Name:     c.FormValue("name"),
+		Email:    c.FormValue("email"),
+		Phone:    c.FormValue("phone"),
+		PostCode: c.FormValue("post_code"),
+		Address:  c.FormValue("address"),
+		Status:   "Waiting For Verification",
 	}
 
 	transaction, err := h.TransactionRepository.GetUncheckedOutTransactionByUserID(int(userID))
@@ -260,10 +256,6 @@ func (h *handlerTransaction) UpdateTransaction(c echo.Context) error {
 
 	if request.Address != "" {
 		transaction.Address = request.Address
-	}
-
-	if request.Attachment != "" {
-		transaction.Attachment = request.Attachment
 	}
 
 	if request.Status != "" {
