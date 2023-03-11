@@ -21,16 +21,18 @@ export default function CartPage() {
         const response = await API.get("transactions/unfinished");
         return response.data.data;
     })
-    const incrementCart = (id, orderQuantity) => {
+    const incrementCart = (id, orderQuantity,product_id) => {
         setCart({
             id: id,
+            product_id: product_id,
             order_quantity: orderQuantity + 1
         })
     }
 
-    const decrementCart = (id, orderQuantity) => {
+    const decrementCart = (id, orderQuantity,product_id) => {
         setCart({
             id: id,
+            product_id: product_id,
             order_quantity: orderQuantity - 1
         })
     }
@@ -45,7 +47,10 @@ export default function CartPage() {
             };
             const response = await API.patch(
                 '/cart/' + id,
-                { order_quantity: cart.order_quantity },
+                { 
+                    product_id: cart.product_id,
+                    order_quantity: cart.order_quantity 
+                },
                 config
             );
             console.log(response)
@@ -67,10 +72,7 @@ export default function CartPage() {
         }
     });
 
-
-
     useEffect(() => {
-        
         if (cart) {
             updateCart.mutate(cart.id)
         }

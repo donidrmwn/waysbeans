@@ -8,6 +8,7 @@ type CreateCartRequest struct {
 }
 
 type UpdateCartRequest struct {
+	ProductId     int  `json:"product_id" form:"product_id"`
 	OrderQuantity int  `json:"order_quantity" form:"order_quantity"`
 	Checkout      bool `json:"checkout" form:"checkout"`
 }

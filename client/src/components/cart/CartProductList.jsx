@@ -11,6 +11,7 @@ export default function CartProductList({incrementCart, decrementCart, carts, de
                 <div key={index}>
                     <hr className="horizontalRule" />
                     <Row>
+                     
                         <Col md="2" className="m-auto">
                             <img className='w-100' src={`http://localhost:5000/uploads/${item.products.image}`} alt="" />
                         </Col>
@@ -21,7 +22,7 @@ export default function CartProductList({incrementCart, decrementCart, carts, de
                                     variant="link"
                                     style={{ textDecoration: "none", color: "black" }}
                                     className='fs-1 headerColor user-select-none p-0 pb-3'
-                                    onClick={() => decrementCart(item.id, item.order_quantity)}
+                                    onClick={() => decrementCart(item.id, item.order_quantity,item.product_id)}
                                 >-</Button>
                                 <Form.Control
                                     style={{
@@ -38,7 +39,7 @@ export default function CartProductList({incrementCart, decrementCart, carts, de
                                     variant="link"
                                     style={{ textDecoration: "none", color: "black" }}
                                     className='fs-1 headerColor user-select-none p-0 pb-3'
-                                    onClick={() => incrementCart(item.id, item.order_quantity)}>
+                                    onClick={() => incrementCart(item.id, item.order_quantity,item.product_id)}>
                                     +
                                 </Button>
                             </Form>

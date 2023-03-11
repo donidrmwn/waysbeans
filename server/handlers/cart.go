@@ -234,6 +234,29 @@ func (h *handlerCart) UpdateCart(c echo.Context) error {
 		})
 	}
 
+	product, err := h.ProductRepository.GetProduct(request.ProductId)
+
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, dto.ErrorResult{
+			Code:    http.StatusBadRequest,
+			Message: "Error product: " + err.Error(),
+		})
+	}
+
+	if product.Stock == 0 {
+		return c.JSON(http.StatusBadRequest, dto.ErrorResult{
+			Code:    http.StatusBadRequest,
+			Message: "Maaf, stock barang habis.",
+		})
+	}
+
+	if product.Stock < request.OrderQuantity {
+		return c.JSON(http.StatusBadRequest, dto.ErrorResult{
+			Code:    http.StatusBadRequest,
+			Message: "Maaf, sisa stock barang sekarang adalah " + strconv.Itoa(product.Stock) + " Pcs, tidak mencukupi untuk order anda.",
+		})
+	}
+
 	if request.OrderQuantity != 0 {
 		cart.OrderQuantity = request.OrderQuantity
 	}
@@ -244,8 +267,8 @@ func (h *handlerCart) UpdateCart(c echo.Context) error {
 
 	data, err := h.CartRepository.UpdateCart(cart)
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, dto.ErrorResult{
-			Code:    http.StatusInternalServerError,
+		return c.JSON(http.StatusBadRequest, dto.ErrorResult{
+			Code:    http.StatusBadRequest,
 			Message: err.Error(),
 		})
 	}
