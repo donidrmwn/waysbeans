@@ -2,17 +2,22 @@ package handlers
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 	dto "nis-waybeans/dto/result"
 	transactiondto "nis-waybeans/dto/transaction"
 	"nis-waybeans/models"
 	"nis-waybeans/repositories"
+	"os"
 	"strconv"
 	"time"
 
 	"github.com/go-playground/validator"
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/labstack/echo/v4"
+	"github.com/midtrans/midtrans-go"
+	"github.com/midtrans/midtrans-go/snap"
+	"gopkg.in/gomail.v2"
 )
 
 type handlerTransaction struct {
@@ -236,7 +241,7 @@ func (h *handlerTransaction) UpdateTransaction(c echo.Context) error {
 		})
 	}
 
-	h.CheckOutCart(int(userID))
+	// h.CheckOutCart(int(userID))
 
 	if request.Name != "" {
 		transaction.Name = request.Name
@@ -262,6 +267,25 @@ func (h *handlerTransaction) UpdateTransaction(c echo.Context) error {
 		transaction.Status = request.Status
 	}
 
+	var s = snap.Client{}
+	s.New(os.Getenv("SERVER_KEY"), midtrans.Sandbox)
+
+	req := &snap.Request{
+		TransactionDetails: midtrans.TransactionDetails{
+			OrderID:  strconv.Itoa(transaction.ID),
+			GrossAmt: int64(transaction.SubTotal),
+		},
+		CreditCard: &snap.CreditCardDetails{
+			Secure: true,
+		},
+		CustomerDetail: &midtrans.CustomerDetails{
+			FName: transaction.Name,
+			Email: transaction.Email,
+		},
+	}
+
+	snapResp, _ := s.CreateTransaction(req)
+
 	_, err = h.TransactionRepository.UpdateTransaction(transaction)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, dto.ErrorResult{
@@ -269,11 +293,13 @@ func (h *handlerTransaction) UpdateTransaction(c echo.Context) error {
 			Message: err.Error(),
 		})
 	}
+	// h.CheckOutCart(int(userID))
 
-	data, _ := h.TransactionRepository.GetTransactionWithCart(int(userID))
+	//data, _ := h.TransactionRepository.GetTransactionWithCart(int(userID))
 	return c.JSON(http.StatusOK, dto.SuccessResult{
 		Code: http.StatusOK,
-		Data: data,
+		Data: snapResp,
+		// DataSnap: snapResp,
 	})
 }
 
@@ -331,4 +357,103 @@ func (h *handlerTransaction) UpdateStockProduct(TransactionID int) {
 		h.ProductRepository.UpdateProduct(product)
 	}
 
+}
+
+func SendMail(status string, transaction models.Transaction) {
+	if status != transaction.Status && (status == "success") {
+		var CONFIG_SMTP_HOST = "smtp.gmail.com"
+		var CONFIG_SMTP_PORT = 587
+		var CONFIG_SENDER_NAME = "Waysbeans <donidarmawan822@gmail.com>"
+		var CONFIG_AUTH_EMAIL = os.Getenv("SYSTEM_EMAIL")
+		var CONFIG_AUTH_PASSWORD = os.Getenv("SYSTEM_PASSWORD")
+
+		var productList = "Test Product"
+		var subTotal = strconv.Itoa(transaction.SubTotal)
+		//var totalQty = strconv.Itoa(transaction.TotalQty)
+
+		mailer := gomail.NewMessage()
+		mailer.SetHeader("From", CONFIG_SENDER_NAME)
+		mailer.SetHeader("To", transaction.Email)
+		mailer.SetHeader("Subject", "Transaction Status")
+		mailer.SetBody("text/html", fmt.Sprintf(`<!DOCTYPE html>
+			<html lang="en">
+			<head>
+			<meta charset="UTF-8" />
+			<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+			<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+			<title>Document</title>
+			<style>
+			h1 {
+				color: brown;
+				}
+			  </style>
+			</head>
+			<body>
+				<h2>Your Payment :</h2>
+				<ul style="list=style-type:none;">
+					<li>Name : %s</li>
+					<li>Total Payment: Rp.%s</li>
+					<li>Status : <b>%s</b></li>
+				</ul>
+			</body>
+			</html>`, productList, subTotal, status))
+
+		dialer := gomail.NewDialer(
+			CONFIG_SMTP_HOST,
+			CONFIG_SMTP_PORT,
+			CONFIG_AUTH_EMAIL,
+			CONFIG_AUTH_PASSWORD,
+		)
+
+		err := dialer.DialAndSend(mailer)
+		if err != nil {
+			log.Fatal(err.Error())
+		}
+		log.Println("Mail sent! to " + transaction.Email)
+	}
+}
+
+func (h *handlerTransaction) Notification(c echo.Context) error {
+
+	var notificationPayLoad map[string]interface{}
+
+	if err := c.Bind(&notificationPayLoad); err != nil {
+		return c.JSON(http.StatusBadRequest, dto.ErrorResult{
+			Code:    http.StatusBadRequest,
+			Message: err.Error(),
+		})
+	}
+
+	transactionStatus := notificationPayLoad["transaction_status"].(string)
+	fraudStatus := notificationPayLoad["fraud_status"].(string)
+	orderId := notificationPayLoad["order_id"].(string)
+
+	order_id, _ := strconv.Atoi(orderId)
+
+	transaction, _ := h.TransactionRepository.GetTransaction(order_id)
+
+	if transactionStatus == "capture" {
+		if fraudStatus == "challenge" {
+			h.TransactionRepository.UpdateStatusTransaction("pending", order_id)
+		} else if fraudStatus == "accept" {
+			SendMail("success", transaction)
+			h.TransactionRepository.UpdateStatusTransaction("success", order_id)
+			h.CheckOutCart(transaction.UserID)
+		}
+	} else if transactionStatus == "settlement" {
+		SendMail("success", transaction)
+		h.TransactionRepository.UpdateStatusTransaction("success", order_id)
+		h.CheckOutCart(transaction.UserID)
+	} else if transactionStatus == "deny" {
+		h.TransactionRepository.UpdateStatusTransaction("success", order_id)
+		h.CheckOutCart(transaction.UserID)
+	} else if transactionStatus == "cancel" || transactionStatus == "expire" {
+		h.TransactionRepository.UpdateStatusTransaction("failed", order_id)
+	} else if transactionStatus == "pending" {
+		h.TransactionRepository.UpdateStatusTransaction("pending", order_id)
+	}
+	return c.JSON(http.StatusOK, dto.SuccessResult{
+		Code: http.StatusOK,
+		Data: notificationPayLoad,
+	})
 }

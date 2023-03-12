@@ -23,11 +23,14 @@ export default function LandingPage() {
             width: "450px"
         }
     };
+
+    
     let { data: products } = useQuery("productsCache", async () => {
         const response = await API.get("/products");
-    
         return response.data.data;
     })
+
+
     return (
         <>
             <Container className="p-5" >

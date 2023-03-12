@@ -18,6 +18,7 @@ type TransactionRepository interface {
 	GetUncheckedOutTransaction(UserID int) (models.Transaction, error)
 	FindTransactionsByDate(userID int, startData time.Time, endDate time.Time) ([]models.Transaction, error)
 	FindTransactionsByProductID(userID int, productID int) ([]models.Transaction, error)
+	UpdateStatusTransaction(status string, orderId int) (models.Transaction, error)
 }
 
 func RepositoryTransaction(db *gorm.DB) *repository {
@@ -38,7 +39,7 @@ func (r *repository) GetTransaction(ID int) (models.Transaction, error) {
 
 func (r *repository) GetUncheckedOutTransactionByUserID(userID int) (models.Transaction, error) {
 	var transaction models.Transaction
-	err := r.db.Where("user_id = ? and status = 'Unchecked Out'", userID).Preload("User").First(&transaction).Error
+	err := r.db.Where("user_id = ? and status = 'Waiting For Verification'", userID).Preload("User").First(&transaction).Error
 	return transaction, err
 }
 
@@ -65,7 +66,7 @@ func (r *repository) DeleteTransaction(transaction models.Transaction, ID int) (
 
 func (r *repository) GetUncheckedOutTransaction(userID int) (models.Transaction, error) {
 	var transaction models.Transaction
-	err := r.db.First(&transaction, "status = ? and user_id = ?", "Unchecked Out", userID).Error
+	err := r.db.First(&transaction, "status = ? and user_id = ?", "Waiting For Verification", userID).Error
 	return transaction, err
 }
 
@@ -82,4 +83,12 @@ func (r *repository) FindTransactionsByProductID(userID int, productID int) ([]m
 	err := r.db.Where("user_id = ? and id in (?)", userID, transactionsId).Preload("User").Preload("Cart", "product_id = ?", productID).Find(&transactions).Error
 
 	return transactions, err
+}
+
+func (r *repository) UpdateStatusTransaction(status string, orderId int) (models.Transaction, error) {
+	var transaction models.Transaction
+	r.db.First(&transaction, orderId)
+	transaction.Status = status
+	err := r.db.Save(&transaction).Error
+	return transaction, err
 }

@@ -149,7 +149,7 @@ func (h *handlerCart) CreateCart(c echo.Context) error {
 		transaction = models.Transaction{
 			ID:     transactionId,
 			UserID: int(userID),
-			Status: "Unchecked Out",
+			Status: "Waiting For Verification",
 		}
 		transaction, _ = h.TransactionRepository.CreateTransaction(transaction)
 	}

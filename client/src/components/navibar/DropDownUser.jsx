@@ -24,6 +24,7 @@ const style = {
 }
 
 export default function DropDownUser(props) {
+
     const [state, dispatch] = useContext(UserContext)
     let navigate = useNavigate();
     const logout = () => {

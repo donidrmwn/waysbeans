@@ -2,15 +2,17 @@ import CartProductList from "../components/cart/CartProductList";
 import { useEffect, useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
 import { API } from '../config/api';
-import { Row, Col, Container, Button } from 'react-bootstrap'
+import { Row, Col, Container, Button, Alert } from 'react-bootstrap'
 import CartSubTotal from "../components/cart/CartSubTotal";
 import { useNavigate } from "react-router";
 import ModalShipping from "../components/modal/ModalShipping"
 
 export default function CartPage() {
-    
-    
+
+    const [message, setMessage] = useState(null)
     const [cart, setCart] = useState(false)
+
+    let alert = null
     let navigate = useNavigate();
     let { data: carts, refetch: refetchCarts } = useQuery("cartsListCache", async () => {
         const response = await API.get("carts/not-checkout");
@@ -21,20 +23,22 @@ export default function CartPage() {
         const response = await API.get("transactions/unfinished");
         return response.data.data;
     })
-    const incrementCart = (id, orderQuantity,product_id) => {
+    const incrementCart = (id, orderQuantity, product_id) => {
         setCart({
             id: id,
             product_id: product_id,
-            order_quantity: orderQuantity + 1
+            order_quantity: orderQuantity + 1,
         })
+
     }
 
-    const decrementCart = (id, orderQuantity,product_id) => {
+    const decrementCart = (id, orderQuantity, product_id) => {
         setCart({
             id: id,
             product_id: product_id,
-            order_quantity: orderQuantity - 1
+            order_quantity: orderQuantity - 1,
         })
+
     }
 
     const updateCart = useMutation(async (id) => {
@@ -47,24 +51,34 @@ export default function CartPage() {
             };
             const response = await API.patch(
                 '/cart/' + id,
-                { 
+                {
                     product_id: cart.product_id,
-                    order_quantity: cart.order_quantity 
+                    order_quantity: cart.order_quantity
                 },
                 config
             );
-            console.log(response)
+
+            setMessage(null)
             refetchCarts()
+            setMessageCarts()
             refetchTransaction()
+
         } catch (error) {
-            console.log(error)
+            console.log(error.response.data.message)
+            const newAlert = (
+                <Alert variant="danger" className="py-1">
+                    {error.response.data.message}
+                </Alert>
+            )
+            setMessage(newAlert)
+            setMessageCarts()
+
         }
     })
 
     const deleteCart = useMutation(async (id) => {
         try {
             await API.delete(`/cart/${id}`);
-            console.log(id)
             refetchCarts();
             window.dispatchEvent(new Event("badge"));
         } catch (error) {
@@ -77,6 +91,13 @@ export default function CartPage() {
             updateCart.mutate(cart.id)
         }
     }, [cart])
+
+    
+    function setMessageCarts() {
+        var index = carts.findIndex(x => x.id === cart.id)
+        carts[index].message = message
+        console.log("error:", message)
+    }
     return (
         <>
 
@@ -110,7 +131,7 @@ export default function CartPage() {
                 }
             </Container>
 
-            
+
         </>
     )
 }

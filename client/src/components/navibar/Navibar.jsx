@@ -8,13 +8,15 @@ import DropDownAdmin from './DropDownAdmin'
 import DropDownUser from './DropDownUser'
 import { Link } from 'react-router-dom'
 import { useQuery } from 'react-query'
-import { API } from '../../config/api'
+import { API, setAuthToken } from '../../config/api'
 
 
 export default function Navibar() {
+    setAuthToken(localStorage.token);
     const [state] = useContext(UserContext);
     const [showLogin, setShowLogin] = useState(false);
     const [showRegister, setShowRegister] = useState(false);
+  
 
     const handleCloseLogin = () => setShowLogin(false)
     const handleShowLogin = () => setShowLogin(true)
@@ -32,18 +34,23 @@ export default function Navibar() {
         setShowRegister(true);
     };
 
-    let { data: carts,refetch} = useQuery('cartsCache', async () => {
-        const response = await API.get('/carts/not-checkout');
+    let { data: carts, refetch } = useQuery('cartsCache', async () => {
+       // if (localStorage.token) {
+        const response = await API.get('/carts/not-checkout');     
         return response.data.data
+        //}    
     });
 
-    useEffect(() =>{
-       
+
+    useEffect(() => {
+        refetch();
         window.addEventListener('badge', () => {
             refetch()
         })
-    },[])
+    }, [])
+ 
 
+    
     return (
         <>
             <Navbar style={{ boxShadow: "0 5px 300px gray" }} collapseOnSelect expand="lg" bg="light" variant="light" className="mb-5" sticky="top">
@@ -77,9 +84,11 @@ export default function Navibar() {
                                         </>
                                         :
                                         <>
+                                            {/* {carts?.length > 0 && */}
                                             <DropDownUser
                                                 badgeQty={carts?.length}
                                             />
+                                            {/* } */}
                                         </>
 
                                 }

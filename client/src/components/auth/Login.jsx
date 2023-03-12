@@ -40,6 +40,7 @@ export default function Login({ onHide }) {
 
             setAuthToken(localStorage.token);
             console.log("Login", response.data.data.role)
+            console.log("")
             if (response.data.data.role === 'admin') {
                 navigate('/list-transaction');
             } else {

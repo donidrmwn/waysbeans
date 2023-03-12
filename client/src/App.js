@@ -16,16 +16,13 @@ import { PrivateRouteAdmin, PrivateRouteLogin, PrivateRouteUser } from './compon
 import ProductListPage from './pages/ProductListPage';
 import UpdateProductPage from './pages/UpdateProductPage';
 import CartPage from './pages/CartPage';
-import { useQuery } from 'react-query';
-import Shipping from './components/transaction/Shipping';
 
 
 function App() {
   let navigate = useNavigate();
   const [state, dispatch] = useContext(UserContext);
- 
+
   const [isLoading, setIsLoading] = useState(true)
-  
 
 
   useEffect(() => {
@@ -34,17 +31,15 @@ function App() {
         navigate('/');
       }
     }
-
-
+    window.dispatchEvent(new Event("badge"));
   }, [isLoading])
 
   useEffect(() => {
     if (localStorage.token) {
-     
       setAuthToken(localStorage.token);
       checkUser();
+      //window.dispatchEvent(new Event("badge"));
     } else {
-     
       setIsLoading(false);
     }
 
@@ -74,14 +69,12 @@ function App() {
     }
   };
 
-
-
-
   return (
     <>
-      <Navibar />
+
       {isLoading ? null :
         <>
+          <Navibar />
           <Routes>
             <Route exact path='/' element={<LandingPage />} />
             <Route element={<PrivateRouteLogin />}>

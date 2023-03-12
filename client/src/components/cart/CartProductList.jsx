@@ -3,15 +3,16 @@ import { Row, Col, Form, Button } from 'react-bootstrap'
 
 import { ConvertFormatRupiah } from "../../utils";
 
-export default function CartProductList({incrementCart, decrementCart, carts, deleteCart}) {
-    
+export default function CartProductList({incrementCart, decrementCart, carts, deleteCart,message}) {
+     
     return (
         <>
             {carts?.map((item, index) => (
                 <div key={index}>
                     <hr className="horizontalRule" />
                     <Row>
-                     
+                        
+                        {item.message}
                         <Col md="2" className="m-auto">
                             <img className='w-100' src={`http://localhost:5000/uploads/${item.products.image}`} alt="" />
                         </Col>

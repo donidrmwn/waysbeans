@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button, Container, Form } from "react-bootstrap";
 import { useMutation } from "react-query";
 import { useNavigate } from "react-router";
@@ -55,13 +55,52 @@ export default function Shipping(props) {
                 formData,
                 config
             );
-            console.log("success shipping: ",response.data);
-            window.dispatchEvent(new Event("badge"));
-            props.handleSuccess();
+            console.log("success shipping: ",response.data.data.token);
+            const token = response.data.data.token;
+            window.snap.pay(token, {
+                onSuccess: function (result) {
+                    console.log(result);
+                    window.dispatchEvent(new Event("badge"));
+                    props.handleSuccess();
+                },
+                onPending: function (result){
+                    console.log(result);
+                    window.dispatchEvent(new Event("badge"));
+                    props.handleSuccess();
+                },
+                onError: function (result){
+                    console.log(result);
+                    window.dispatchEvent(new Event("badge"));
+                    props.handleSuccess();
+                },
+                onClose: function(){
+                    alert("you closed the popup without finishing the payment");
+                }
+            })
+            
         } catch (error) {
-            console.log(error)
+            console.log("transaction failed: ", error)
         }
-    })
+    });
+
+    useEffect(() => {
+        //change this to the script source you want to load, for example this is snap.js sandbox env
+        const midtransScriptUrl = "https://app.sandbox.midtrans.com/snap/snap.js";
+        //change this according to your client-key
+        const myMidtransClientKey = process.env.REACT_APP_MIDTRANS_CLIENT_KEY;
+
+        let scriptTag = document.createElement("script");
+        scriptTag.src = midtransScriptUrl;
+        // optional if you want to set script attribute
+        // for example snap.js have data-client-key attribute
+        scriptTag.setAttribute("data-client-key", myMidtransClientKey);
+
+        document.body.appendChild(scriptTag);
+        return () => {
+            document.body.removeChild(scriptTag);
+        };
+    }, []);
+
     return (
         <>
             <Container>
