@@ -19,6 +19,7 @@ type TransactionRepository interface {
 	FindTransactionsByDate(userID int, startData time.Time, endDate time.Time) ([]models.Transaction, error)
 	FindTransactionsByProductID(userID int, productID int) ([]models.Transaction, error)
 	UpdateStatusTransaction(status string, orderId int) (models.Transaction, error)
+	FindTransactionsByUser(userID int) ([]models.Transaction, error)
 }
 
 func RepositoryTransaction(db *gorm.DB) *repository {
@@ -28,6 +29,12 @@ func RepositoryTransaction(db *gorm.DB) *repository {
 func (r *repository) FindTransactions() ([]models.Transaction, error) {
 	var transactions []models.Transaction
 	err := r.db.Preload("User").Preload("Cart.Product").Find(&transactions).Error
+	return transactions, err
+}
+
+func (r *repository) FindTransactionsByUser(userID int) ([]models.Transaction, error) {
+	var transactions []models.Transaction
+	err := r.db.Order("id desc").Preload("User").Preload("Cart.Product").Find(&transactions, "user_id = ? and status <> 'Waiting For Verification'", userID).Error
 	return transactions, err
 }
 

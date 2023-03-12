@@ -1,11 +1,19 @@
-import Brand from "../components/brand/Brand";
+
 import { Container, Card, Row, Col } from 'react-bootstrap'
-import { ConvertFormatRupiah } from "../utils";
+import { useQuery } from 'react-query';
+import ProfileTransactions from '../components/transaction/ProfileTransactions';
+import { API } from '../config/api';
+
 export default function ProfilePage() {
     const title = "Profile";
     document.title = "Waysbeans | " + title;
-
     
+    let { data: transactions, refetch } = useQuery("transactionListCache", async () => {
+        const response = await API.get("/transactions/user");
+        return response.data.data;
+    })
+
+
     return (
         <>
             <Container className='p-5'>
@@ -34,7 +42,7 @@ export default function ProfilePage() {
 
                         <Container>
                             <h4 className='headerColor fw-bold mb-4'>My Transaction</h4>
-                            <Card className='mb-3'>
+                            {/* <Card className='mb-3'>
                                 <Card.Body className='cardTransaction'>
                                     <h3>Order Number: {3212032149}</h3>
                                     <Row className='px-3 align-items-center'>
@@ -66,7 +74,10 @@ export default function ProfilePage() {
                                         </Col>
                                     </Row>
                                 </Card.Body>
-                            </Card>
+                            </Card> */}
+                            <ProfileTransactions 
+                                transactions={transactions}
+                            />
                         </Container>
                     </Col>
                 </Row>

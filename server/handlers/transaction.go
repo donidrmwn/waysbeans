@@ -73,6 +73,23 @@ func (h *handlerTransaction) FindTransactions(c echo.Context) error {
 	})
 }
 
+func (h *handlerTransaction) FindTransactionsByUser(c echo.Context) error {
+	userLogin := c.Get("userLogin")
+	userID := userLogin.(jwt.MapClaims)["id"].(float64)
+	transactions, err := h.TransactionRepository.FindTransactionsByUser(int(userID))
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, dto.ErrorResult{
+			Code:    http.StatusBadRequest,
+			Message: err.Error(),
+		})
+	}
+
+	return c.JSON(http.StatusOK, dto.SuccessResult{
+		Code: http.StatusOK,
+		Data: transactions,
+	})
+}
+
 func (h *handlerTransaction) FindTransactionsByDate(c echo.Context) error {
 	startDate := c.QueryParam("start_date")
 	endDate := c.QueryParam("end_date")
@@ -115,7 +132,6 @@ func (h *handlerTransaction) FindTransactionsByProductID(c echo.Context) error {
 		Code: http.StatusOK,
 		Data: transactions,
 	})
-
 }
 
 func (h *handlerTransaction) GetTransaction(c echo.Context) error {
@@ -175,7 +191,7 @@ func (h *handlerTransaction) CreateTransaction(c echo.Context) error {
 	var transactionIsMatch = false
 	var transactionId int
 	for !transactionIsMatch {
-		transactionId = int(time.Now().Unix()) //1678180770
+		transactionId = int(time.Now().Unix())
 		transactionData, _ := h.TransactionRepository.GetTransaction(transactionId)
 		if transactionData.ID == 0 {
 			transactionIsMatch = true
@@ -212,7 +228,6 @@ func (h *handlerTransaction) CreateTransaction(c echo.Context) error {
 }
 
 func (h *handlerTransaction) UpdateTransaction(c echo.Context) error {
-
 	userLogin := c.Get("userLogin")
 	userID := userLogin.(jwt.MapClaims)["id"].(float64)
 	request := transactiondto.CreateTransactionRequest{
@@ -240,8 +255,6 @@ func (h *handlerTransaction) UpdateTransaction(c echo.Context) error {
 			Message: err.Error(),
 		})
 	}
-
-	// h.CheckOutCart(int(userID))
 
 	if request.Name != "" {
 		transaction.Name = request.Name
@@ -293,13 +306,10 @@ func (h *handlerTransaction) UpdateTransaction(c echo.Context) error {
 			Message: err.Error(),
 		})
 	}
-	// h.CheckOutCart(int(userID))
 
-	//data, _ := h.TransactionRepository.GetTransactionWithCart(int(userID))
 	return c.JSON(http.StatusOK, dto.SuccessResult{
 		Code: http.StatusOK,
 		Data: snapResp,
-		// DataSnap: snapResp,
 	})
 }
 
@@ -343,7 +353,6 @@ func (h *handlerTransaction) CheckOutCart(userID int) {
 
 	}
 	h.UpdateStockProduct(transaction.ID)
-
 }
 
 func (h *handlerTransaction) UpdateStockProduct(TransactionID int) {
@@ -356,7 +365,6 @@ func (h *handlerTransaction) UpdateStockProduct(TransactionID int) {
 		product.Stock = product.Stock - element.OrderQuantity
 		h.ProductRepository.UpdateProduct(product)
 	}
-
 }
 
 func SendMail(status string, transaction models.Transaction) {

@@ -15,7 +15,7 @@ type Transaction struct {
 	TotalQty  int            `json:"total_qty" gorm:"type: int" form:"total_qty"`
 	SubTotal  int            `json:"sub_total" gorm:"type: int" form:"sub_total"`
 	CreatedAt time.Time      `json:"-"`
-	UpdatedAt time.Time      `json:"-"`
+	UpdatedAt time.Time      `json:"updated_at" gorm:"type: datetime"`
 	Cart      []CartResponse `json:"carts"`
 }
 
