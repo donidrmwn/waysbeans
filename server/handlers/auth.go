@@ -17,30 +17,32 @@ import (
 )
 
 type handlerAuth struct {
-	AuthRepository repositories.AuthRepository
+	AuthRepository    repositories.AuthRepository
+	ProfileRepository repositories.ProfileRepository
 }
 
-func HandlerAuth(AuthRepository repositories.AuthRepository) *handlerAuth {
-	return &handlerAuth{AuthRepository}
+func HandlerAuth(
+	AuthRepository repositories.AuthRepository,
+	ProfileRepository repositories.ProfileRepository,
+) *handlerAuth {
+	return &handlerAuth{
+		AuthRepository,
+		ProfileRepository,
+	}
 }
 
 // Register
 func (h *handlerAuth) Register(c echo.Context) error {
 
 	request := new(authdto.AuthRequest)
-	request.Role = "admin"
+	request.Role = "customer"
 	if err := c.Bind(request); err != nil {
 		return c.JSON(http.StatusBadRequest, dto.ErrorResult{
 			Code:    http.StatusBadRequest,
 			Message: err.Error(),
 		})
 	}
-	// request := authdto.AuthRequest{
-	// 	Name:     c.FormValue("name"),
-	// 	Email:    c.FormValue("email"),
-	// 	Password: c.FormValue("password"),
-	// 	Role:     "admin",
-	// }
+
 	validation := validator.New()
 	err := validation.Struct(request)
 	if err != nil {
@@ -71,6 +73,17 @@ func (h *handlerAuth) Register(c echo.Context) error {
 			Code:    http.StatusInternalServerError,
 			Message: err.Error(),
 		})
+	}
+
+	profile, _ := h.ProfileRepository.GetProfileByUserID(data.ID)
+	if profile.ID == 0 {
+		profile = models.Profile{
+			Name:           request.Name,
+			UserID:         data.ID,
+			ProfilePicture: "profile.png",
+		}
+
+		h.ProfileRepository.CreateProfile(profile)
 	}
 
 	return c.JSON(http.StatusOK, dto.SuccessResult{

@@ -1,18 +1,34 @@
 
-import { Container, Card, Row, Col } from 'react-bootstrap'
+import { useEffect, useState } from 'react';
+import { Container, Card, Row, Col, Button } from 'react-bootstrap'
 import { useQuery } from 'react-query';
+import ModalRegisterProfile from '../components/modal/ModalRegisterProfile';
 import ProfileTransactions from '../components/transaction/ProfileTransactions';
 import { API } from '../config/api';
 
 export default function ProfilePage() {
     const title = "Profile";
     document.title = "Waysbeans | " + title;
-    
+
+    const [showModalProfile, setShowModalProfile] = useState(false)
+
+    const handleShowModalProfile = () => setShowModalProfile(true)
+    const handleCloseModalProfile = () => setShowModalProfile(false)
+
     let { data: transactions, refetch } = useQuery("transactionListCache", async () => {
         const response = await API.get("/transactions/user");
         return response.data.data;
     })
 
+    let { data: profile,refetch : refetchProfile } = useQuery("profileCache", async () => {
+        const response = await API.get("/profile/user");
+        return response.data.data;
+    })
+
+    useEffect(() => {
+      refetchProfile()
+    }, [])
+    
 
     return (
         <>
@@ -22,17 +38,20 @@ export default function ProfilePage() {
                         <Container>
                             <h4 className='headerColor fw-bold mb-4'>My Profile</h4>
                             <Row>
-                                <Col md="6" className='d-flex'>
-                                    <img className='w-100' src={`${"rwanda-beans.png"}`} alt="" />
+                                <Col md="6" className='d-flex '>
+                                    <Row className='d-flex justify-content-center'>
+                                        <img className='w-100 mb-2' src={`http://localhost:5000/uploads/${profile?.profile_picture}`} alt="" />
+                                        <Button onClick={handleShowModalProfile}  className='w-75 main-button py-2 fs-6'>Update Profile</Button>
+                                    </Row>
                                 </Col>
                                 <Col>
                                     <div className='mb-5'>
                                         <p className="headerColor fw-bold m-0 fs-5">Full Name</p>
-                                        <p className='m-0'>{"Doni"}</p>
+                                        <p className='m-0'>{profile?.name}</p>
                                     </div>
                                     <div>
                                         <p className="headerColor fw-bold m-0 fs-5">Email</p>
-                                        <p className='m-0'>{"doni@mail.com"}</p>
+                                        <p className='m-0'>{profile?.user.email}</p>
                                     </div>
                                 </Col>
                             </Row>
@@ -42,46 +61,18 @@ export default function ProfilePage() {
 
                         <Container>
                             <h4 className='headerColor fw-bold mb-4'>My Transaction</h4>
-                            {/* <Card className='mb-3'>
-                                <Card.Body className='cardTransaction'>
-                                    <h3>Order Number: {3212032149}</h3>
-                                    <Row className='px-3 align-items-center'>
-                                        <Col md="2" >
-                                            <img className='w-100' src={`/${"rwanda-beans.png"}`} alt="" />
-                                        </Col>
-                                        <Col md="7">
-                                            <div className='mb-3'>
-                                                <h5 className='fw-bold headerColor'>{"rwanda"}</h5>
-                                                <p className='m-0'>{"09-Mar-2023"}</p>
-                                            </div>
-                                            <div>
-                                                <p className='m-0'>Price: {ConvertFormatRupiah(25000)}</p>
-                                                <p className='m-0'>Qty: {4}</p>
-                                                <p className='m-0 headerColor fw-bold'>Sub Total : {ConvertFormatRupiah(1000000)}</p>
-                                            </div>
-                                        </Col>
-                                        <Col className='d-flex align-items-center' md="3">
-                                            <div className='d-grid ' >
-                                                <div className='m-auto mb-3'>
-                                                    <Brand
-                                                        imgSize="15px" />
-                                                </div>
-                                                <img className='w-50 m-auto' src="qr_code.png" alt="" />
-                                                <div className="waitingTrans mt-2 d-flex  justify-content-center align-items-center w-100 p-1">
-                                                    <p className='m-0'>Waiting Approve</p>
-                                                </div>
-                                            </div>
-                                        </Col>
-                                    </Row>
-                                </Card.Body>
-                            </Card> */}
-                            <ProfileTransactions 
+                            <ProfileTransactions
                                 transactions={transactions}
                             />
                         </Container>
                     </Col>
                 </Row>
             </Container>
+            <ModalRegisterProfile 
+                show={showModalProfile}
+                onHide={handleCloseModalProfile}
+                refetchProfile={refetchProfile}
+            />
         </>
     )
 }

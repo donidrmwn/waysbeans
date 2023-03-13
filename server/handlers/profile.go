@@ -24,11 +24,12 @@ func HandlerProfile(ProfileRepository repositories.ProfileRepository) *handlerPr
 func convertResponseProfile(u models.Profile) profiledto.ProfileResponse {
 	return profiledto.ProfileResponse{
 		ID:             u.ID,
+		Name:           u.Name,
 		Phone:          u.Phone,
 		Address:        u.Address,
 		UserID:         u.UserID,
 		ProfilePicture: u.ProfilePicture,
-		//User:    u.User,
+		User:           u.User,
 	}
 }
 
@@ -63,6 +64,22 @@ func (h *handlerProfile) GetProfile(c echo.Context) error {
 	})
 }
 
+func (h *handlerProfile) GetProfileByUserID(c echo.Context) error {
+	userLogin := c.Get("userLogin")
+	userID := userLogin.(jwt.MapClaims)["id"].(float64)
+	profile, err := h.ProfileRepository.GetProfileByUserID(int(userID))
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, dto.ErrorResult{
+			Code:    http.StatusBadRequest,
+			Message: err.Error(),
+		})
+	}
+
+	return c.JSON(http.StatusOK, dto.SuccessResult{
+		Code: http.StatusOK,
+		Data: convertResponseProfile(profile),
+	})
+}
 func (h *handlerProfile) CreateProfile(c echo.Context) error {
 	userLogin := c.Get("userLogin")
 	userID := userLogin.(jwt.MapClaims)["id"].(float64)
@@ -119,7 +136,8 @@ func (h *handlerProfile) UpdateProfile(c echo.Context) error {
 	userID := userLogin.(jwt.MapClaims)["id"].(float64)
 	dataFile := c.Get("dataFile").(string)
 
-	request := profiledto.CreateProfileRequest{
+	request := profiledto.UpdateProfileRequest{
+		Name:           c.FormValue("name"),
 		Phone:          c.FormValue("phone"),
 		Address:        c.FormValue("address"),
 		UserID:         int(userID),
@@ -135,6 +153,9 @@ func (h *handlerProfile) UpdateProfile(c echo.Context) error {
 		})
 	}
 
+	if request.Name != "" {
+		profile.Name = request.Name
+	}
 	if request.Phone != "" {
 		profile.Phone = request.Phone
 	}
@@ -145,6 +166,9 @@ func (h *handlerProfile) UpdateProfile(c echo.Context) error {
 
 	if request.UserID != 0 {
 		profile.UserID = request.UserID
+	}
+	if request.ProfilePicture != "" {
+		profile.ProfilePicture = request.ProfilePicture
 	}
 
 	data, err := h.ProfileRepository.UpdateProfile(profile)

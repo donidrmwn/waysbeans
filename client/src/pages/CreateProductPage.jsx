@@ -151,7 +151,8 @@ export default function CreateProductPage() {
                                             <p className="m-0"> Photo Product</p>
                                         </Col>
                                         <Col md="4" className="d-flex justify-content-end">
-                                            <Form.Control type="file"
+                                            <Form.Control 
+                                            type="file"
                                                 name="image"
                                                 onChange={handleOnChange}
                                                 hidden />

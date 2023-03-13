@@ -12,8 +12,9 @@ type CreateProfileRequest struct {
 }
 
 type UpdateProfileRequest struct {
-	Phone   string `json:"phone" form:"phone" `
-	Address string `json:"address" form:"address"`
-	UserID  int    `json:"user_id" form:"user_id"`
-	Photo   string `json:"photo" form:"photo" validate:"required"`
+	Name           string `json:"name" form:"name"`
+	Phone          string `json:"phone" form:"phone" `
+	Address        string `json:"address" form:"address"`
+	UserID         int    `json:"user_id" form:"user_id"`
+	ProfilePicture string `json:"profile_picture" form:"profile_picture"`
 }

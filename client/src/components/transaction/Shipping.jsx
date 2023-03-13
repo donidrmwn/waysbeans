@@ -104,7 +104,7 @@ export default function Shipping(props) {
     return (
         <>
             <Container>
-                <h3 className="mb-5">Shipping</h3>
+                <h3 className="mb-5">Confirm Order</h3>
                 <Form onSubmit={(e) => handleSubmit.mutate(e)}>
                     <Form.Control
                         onChange={handleChange}

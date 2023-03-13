@@ -444,17 +444,17 @@ func (h *handlerTransaction) Notification(c echo.Context) error {
 		if fraudStatus == "challenge" {
 			h.TransactionRepository.UpdateStatusTransaction("pending", order_id)
 		} else if fraudStatus == "accept" {
+			h.CheckOutCart(transaction.UserID)
 			SendMail("success", transaction)
 			h.TransactionRepository.UpdateStatusTransaction("success", order_id)
-			h.CheckOutCart(transaction.UserID)
 		}
 	} else if transactionStatus == "settlement" {
+		h.CheckOutCart(transaction.UserID)
 		SendMail("success", transaction)
 		h.TransactionRepository.UpdateStatusTransaction("success", order_id)
-		h.CheckOutCart(transaction.UserID)
 	} else if transactionStatus == "deny" {
-		h.TransactionRepository.UpdateStatusTransaction("success", order_id)
 		h.CheckOutCart(transaction.UserID)
+		h.TransactionRepository.UpdateStatusTransaction("success", order_id)
 	} else if transactionStatus == "cancel" || transactionStatus == "expire" {
 		h.TransactionRepository.UpdateStatusTransaction("failed", order_id)
 	} else if transactionStatus == "pending" {
