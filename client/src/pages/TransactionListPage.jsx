@@ -92,7 +92,7 @@ export default function TransactionListPage() {
             <Container className='p-5'>
                 <h1>Income Transaction</h1>
                 <Form>
-                    <Dropdown>
+                    {/* <Dropdown>
                         <Dropdown.Toggle variant='secondary'>
                             Filter
                         </Dropdown.Toggle>
@@ -101,8 +101,8 @@ export default function TransactionListPage() {
                             <Dropdown.Item onClick={() => setFilter(1)}>Transaction Date</Dropdown.Item>
                             <Dropdown.Item onClick={() => setFilter(2)}>Order Number</Dropdown.Item>
                         </Dropdown.Menu>
-                    </Dropdown>
-                    {filterForm ? filterForm : null}
+                    </Dropdown> */}
+                    {/* {filterForm ? filterForm : null} */}
                 </Form>
                 <Table style={{ fontSize: "14px" }} className='mt-5' striped bordered hover>
                     <thead>

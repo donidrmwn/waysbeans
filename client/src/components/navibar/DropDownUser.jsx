@@ -1,6 +1,8 @@
 import { useContext } from 'react';
 import { Row, Col, NavDropdown, Image, Dropdown, NavLink } from 'react-bootstrap'
+import { useQuery } from 'react-query';
 import { Link, useNavigate } from 'react-router-dom'
+import { API } from '../../config/api';
 import { UserContext } from '../../context/userContext';
 
 const style = {
@@ -24,6 +26,10 @@ const style = {
 }
 
 export default function DropDownUser(props) {
+    let { data: profile,refetch : refetchProfile } = useQuery("profileCache", async () => {
+        const response = await API.get("/profile/user");
+        return response.data.data;
+    })
 
     const [state, dispatch] = useContext(UserContext)
     let navigate = useNavigate();
@@ -52,7 +58,7 @@ export default function DropDownUser(props) {
 
                     <Col md="6" className="p-0 m-auto">
                         <NavDropdown
-                            title={<Image style={style.roundedImage} className="m-auto " src={`/${"profile.png"}`} alt="user pic" />} id="basic-nav-dropdown">
+                            title={<Image style={style.roundedImage} className="m-auto " src={`http://localhost:5000/uploads/${profile?.profile_picture}`} alt="user pic" />} id="basic-nav-dropdown">
                             <div style={style.dropDownContainer}>
                                 <NavDropdown.Item
                                     as={Link}

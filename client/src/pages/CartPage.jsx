@@ -12,7 +12,7 @@ export default function CartPage() {
     const [message, setMessage] = useState(null)
     const [cart, setCart] = useState(false)
 
-    let alert = null
+   
     let navigate = useNavigate();
     let { data: carts, refetch: refetchCarts } = useQuery("cartsListCache", async () => {
         const response = await API.get("carts/not-checkout");
@@ -64,15 +64,15 @@ export default function CartPage() {
             refetchTransaction()
 
         } catch (error) {
-            console.log(error.response.data.message)
-            const newAlert = (
-                <Alert variant="danger" className="py-1">
-                    {error.response.data.message}
-                </Alert>
-            )
-            setMessage(newAlert)
-            setMessageCarts()
-
+            //console.log(error.response.data.message)
+            // const newAlert = (
+            //     <Alert variant="danger" className="py-1">
+            //         {error.response.data.message}
+            //     </Alert>
+            // )
+            // setMessage(newAlert)
+            // setMessageCarts()
+            alert(error.response.data.message)
         }
     })
 
