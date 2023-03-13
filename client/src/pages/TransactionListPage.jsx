@@ -12,10 +12,10 @@ export default function TransactionListPage() {
     const [filterDate, setFilterDate] = useState({
         start_date: '',
         end_date: '',
-    })
+    });
 
 
-    const handleOnChange = (e) => {
+    const handleChangeDate = (e) => {
         setFilterDate({
             ...filterDate,
             [e.target.name]: e.target.value,
@@ -30,32 +30,38 @@ export default function TransactionListPage() {
 
     const handleOnSubmit = (e) => {
         e.preventDefault();
-        setRouting(`/transactions/filter/by-date?start_date=${filterDate.start_date}&end_date=${filterDate.end_date}`)
+
         refetch()
         console.log(routing)
     }
+    
 
     function showForm() {
         switch (filterState) {
             case 1:
-                
+                setRouting(`/transactions/filter/by-date?start_date=${filterDate.start_date}&end_date=${filterDate.end_date}`)
                 setFilterForm(
                     <>
-                        <Form className='mt-3 d-flex w-50 gap-3'>
-                            <Form.Control
-                                onChange={handleOnChange}
-                                name='start_date'
-                                type='date'
-                            />
-                            <Form.Control
-                                onChange={handleOnChange}
-                                name="end_date"
-                                type='date'
-                            />
+                        {/* <Form className='mt-3 d-flex w-50 gap-3'>
+                            <Form.Group controlId='formStartDate'>
+                                <Form.Control
+                                    onChange={handleChangeDate}
+                                    name='start_date'
+                                    type='date'
+                                />
+                            </Form.Group>
+                            <Form.Group controlId='formEndDate'>
+                                <Form.Control
+                                    onChange={handleChangeDate}
+                                    name="end_date"
+                                    type='date'
+                                />
+                                
+                            </Form.Group>
                             <Button onClick={(e) => handleOnSubmit(e)}>
-                                Submit
-                            </Button>
-                        </Form>
+                                    Submit
+                                </Button>
+                        </Form> */}
                     </>
                 )
                 break;
@@ -80,7 +86,7 @@ export default function TransactionListPage() {
 
     useEffect(() => {
         refetch()
-    },[routing])
+    }, [routing])
     useEffect(() => {
         showForm();
         // if (filterState == 0) {
@@ -91,8 +97,8 @@ export default function TransactionListPage() {
         <>
             <Container className='p-5'>
                 <h1>Income Transaction</h1>
-                <Form>
-                    {/* <Dropdown>
+                {/* <Form>
+                    <Dropdown>
                         <Dropdown.Toggle variant='secondary'>
                             Filter
                         </Dropdown.Toggle>
@@ -101,9 +107,9 @@ export default function TransactionListPage() {
                             <Dropdown.Item onClick={() => setFilter(1)}>Transaction Date</Dropdown.Item>
                             <Dropdown.Item onClick={() => setFilter(2)}>Order Number</Dropdown.Item>
                         </Dropdown.Menu>
-                    </Dropdown> */}
-                    {/* {filterForm ? filterForm : null} */}
-                </Form>
+                    </Dropdown>
+                    {filterForm ? filterForm : null}
+                </Form> */}
                 <Table style={{ fontSize: "14px" }} className='mt-5' striped bordered hover>
                     <thead>
                         <tr>

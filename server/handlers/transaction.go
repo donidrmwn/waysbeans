@@ -368,14 +368,18 @@ func (h *handlerTransaction) UpdateStockProduct(TransactionID int) {
 }
 
 func SendMail(status string, transaction models.Transaction) {
-	if status != transaction.Status && (status == "success") {
+	if status != transaction.Status && (status == "Success") {
 		var CONFIG_SMTP_HOST = "smtp.gmail.com"
 		var CONFIG_SMTP_PORT = 587
 		var CONFIG_SENDER_NAME = "Waysbeans <donidarmawan822@gmail.com>"
 		var CONFIG_AUTH_EMAIL = os.Getenv("SYSTEM_EMAIL")
 		var CONFIG_AUTH_PASSWORD = os.Getenv("SYSTEM_PASSWORD")
 
-		var productList = "Test Product"
+		var productList = ""
+		for _, element := range transaction.Cart {
+
+			productList = productList + " " + element.Product.Name
+		}
 		var subTotal = strconv.Itoa(transaction.SubTotal)
 		//var totalQty = strconv.Itoa(transaction.TotalQty)
 
@@ -445,16 +449,16 @@ func (h *handlerTransaction) Notification(c echo.Context) error {
 			h.TransactionRepository.UpdateStatusTransaction("pending", order_id)
 		} else if fraudStatus == "accept" {
 			h.CheckOutCart(transaction.UserID)
-			SendMail("success", transaction)
-			h.TransactionRepository.UpdateStatusTransaction("success", order_id)
+			SendMail("Success", transaction)
+			h.TransactionRepository.UpdateStatusTransaction("Success", order_id)
 		}
 	} else if transactionStatus == "settlement" {
 		h.CheckOutCart(transaction.UserID)
-		SendMail("success", transaction)
-		h.TransactionRepository.UpdateStatusTransaction("success", order_id)
+		SendMail("Success", transaction)
+		h.TransactionRepository.UpdateStatusTransaction("Success", order_id)
 	} else if transactionStatus == "deny" {
 		h.CheckOutCart(transaction.UserID)
-		h.TransactionRepository.UpdateStatusTransaction("success", order_id)
+		h.TransactionRepository.UpdateStatusTransaction("Success", order_id)
 	} else if transactionStatus == "cancel" || transactionStatus == "expire" {
 		h.TransactionRepository.UpdateStatusTransaction("failed", order_id)
 	} else if transactionStatus == "pending" {

@@ -64,15 +64,15 @@ export default function CartPage() {
             refetchTransaction()
 
         } catch (error) {
-            //console.log(error.response.data.message)
-            // const newAlert = (
-            //     <Alert variant="danger" className="py-1">
-            //         {error.response.data.message}
-            //     </Alert>
-            // )
-            // setMessage(newAlert)
-            // setMessageCarts()
-            alert(error.response.data.message)
+            console.log(error.response.data.message)
+            const newAlert = (
+                <Alert variant="danger" className="py-1">
+                    {error.response.data.message}
+                </Alert>
+            )
+            setMessage(newAlert)
+            setMessageCarts()
+            // alert(error.response.data.message)
         }
     })
 

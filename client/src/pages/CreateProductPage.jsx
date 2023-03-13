@@ -59,7 +59,7 @@ export default function CreateProductPage() {
             let url = URL.createObjectURL(e.target.files[0]);
             setPreview(url);
         }
-
+        console.log(form)
     }
 
     const handleSubmit = useMutation(async (e) => {
@@ -78,7 +78,7 @@ export default function CreateProductPage() {
             formData.set('description', form.description);
             formData.set('price', form.price);
             formData.set('stock', form.stock);
-            console.log(form)
+           
             const response = await API.post('/product', formData, config);
             console.log("add product success : ", response);
             navigate('/list-product');
@@ -103,9 +103,7 @@ export default function CreateProductPage() {
                         <Form onSubmit={(e) => handleSubmit.mutate(e)}>
                             <Form.Group className="mb-4 w-100 fs-1" controlId="formName">
                                 <Form.Control
-
                                     onChange={handleOnChange}
-                                  
                                     name="name"
                                     style={style.textInput}
                                     type="text"

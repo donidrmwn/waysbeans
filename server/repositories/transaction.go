@@ -28,7 +28,7 @@ func RepositoryTransaction(db *gorm.DB) *repository {
 
 func (r *repository) FindTransactions() ([]models.Transaction, error) {
 	var transactions []models.Transaction
-	err := r.db.Order("id desc").Preload("User").Preload("Cart.Product").Find(&transactions).Error
+	err := r.db.Where("status <> 'Waiting For Verification'").Order("id desc").Preload("User").Preload("Cart.Product").Find(&transactions).Error
 	return transactions, err
 }
 
