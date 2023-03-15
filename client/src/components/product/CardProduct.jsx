@@ -9,7 +9,7 @@ export default function CardProduct(props) {
         <>
             <Col key={props.index} >
                 <Link to={'/product/' + props.product.id} style={{ textDecoration: "none" }}>
-                <Card.Img role="button" variant="top" src={`http://localhost:5000/uploads/${props.product.image}`} />
+                <Card.Img role="button" variant="top" src={`${props.product.image}`} />
                 <Card.Body className="p-2" style={{ backgroundColor: "#F6E6DA" }}>
                     <Card.Title className="mb-3 fw-bold header-color">
                         {props.product.name}

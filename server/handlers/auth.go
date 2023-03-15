@@ -80,7 +80,7 @@ func (h *handlerAuth) Register(c echo.Context) error {
 		profile = models.Profile{
 			Name:           request.Name,
 			UserID:         data.ID,
-			ProfilePicture: "profile.png",
+			ProfilePicture: "https://res.cloudinary.com/waysbeans/image/upload/v1678843369/waysbeans/profile_wf7tsd.png",
 		}
 
 		h.ProfileRepository.CreateProfile(profile)

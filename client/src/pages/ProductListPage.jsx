@@ -86,7 +86,7 @@ export default function ProductListPage() {
                                         <td className='d-flex justify-content-center'>
                                             <Image
                                                 className="w-25"
-                                                src={`http://localhost:5000/uploads/${item.image}`}
+                                                src={`${item.image}`}
                                             />
                                         </td>
                                         <td>{item.name}</td>
