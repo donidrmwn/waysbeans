@@ -171,7 +171,7 @@ func (h *handlerCart) CreateCart(c echo.Context) error {
 		Checkout:      false,
 		TransactionID: request.TransactionID,
 	}
-	// back here
+
 	checkCart, _ := h.CartRepository.CheckCartProductID(request.ProductID)
 	fmt.Println(checkCart.ID)
 	if checkCart.ID != 0 {
