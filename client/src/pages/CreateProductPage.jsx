@@ -7,6 +7,9 @@ import { useNavigate, useParams } from 'react-router';
 
 
 import { API } from '../config/api';
+import LoadingSpinner from "../components/LoadingSpinner";
+import ModalSuccess from "../components/modal/ModalSuccess";
+import ModalFailed from "../components/modal/ModalFailed";
 
 
 const style = {
@@ -46,8 +49,18 @@ export default function CreateProductPage() {
         price: '',
         stock: ''
     });
- 
-   
+    const [isLoading, setIsLoading] = useState(false);
+    const [showSuccessAlert, setShowSuccessAlert] = useState(false)
+    const handleShowModalSuccess = () => setShowSuccessAlert(true)
+    const handleCloseModalSuccess = () => {
+        setShowSuccessAlert(false)
+        navigate('/list-product')
+    }
+
+    const [showFailedAlert, setShowFailedAlert] = useState(false)
+    const handleShowModalFailed = () => setShowFailedAlert(true)
+    const handleCloseModalFailed = () => setShowFailedAlert(false)
+
     const handleOnChange = (e) => {
         setForm({
             ...form,
@@ -65,7 +78,7 @@ export default function CreateProductPage() {
     const handleSubmit = useMutation(async (e) => {
         try {
             e.preventDefault();
-
+            setIsLoading(true);
             const config = {
                 headers: {
                     'Content-type': 'multipart/form-data',
@@ -78,15 +91,15 @@ export default function CreateProductPage() {
             formData.set('description', form.description);
             formData.set('price', form.price);
             formData.set('stock', form.stock);
-           
+
             const response = await API.post('/product', formData, config);
             console.log("add product success : ", response);
-            navigate('/list-product');
-            
-
-
+            setIsLoading(false);
+            handleShowModalSuccess();
         } catch (error) {
             console.log("add product failed: ", error)
+            setIsLoading(false)
+            handleShowModalFailed();
         }
     });
 
@@ -113,7 +126,7 @@ export default function CreateProductPage() {
                             <Form.Group className="mb-4 w-100 removeWebKit" controlId="formStock">
                                 <Form.Control
                                     onChange={handleOnChange}
-                               
+
                                     name="stock"
                                     style={style.textInput}
                                     type="number"
@@ -123,7 +136,7 @@ export default function CreateProductPage() {
                             <Form.Group className="mb-4 w-100" controlId="formPrice">
                                 <Form.Control
                                     onChange={handleOnChange}
-                               
+
                                     name="price"
                                     style={style.textInput}
                                     type="number"
@@ -133,7 +146,7 @@ export default function CreateProductPage() {
                             <Form.Group className="mb-4 w-100" controlId="formDescription">
                                 <Form.Control
                                     onChange={handleOnChange}
-                                    
+
                                     name="description"
                                     style={style.textAreaInput}
                                     as="textarea"
@@ -149,8 +162,8 @@ export default function CreateProductPage() {
                                             <p className="m-0"> Photo Product</p>
                                         </Col>
                                         <Col md="4" className="d-flex justify-content-end">
-                                            <Form.Control 
-                                            type="file"
+                                            <Form.Control
+                                                type="file"
                                                 name="image"
                                                 onChange={handleOnChange}
                                                 hidden />
@@ -161,19 +174,36 @@ export default function CreateProductPage() {
                             </Form.Group>
 
 
-                            <Button className="main-button w-50 m-auto justify-content-center d-flex" type="submit">
-                                Add Product
-                              
+                            <Button className="main-button w-50 m-auto justify-content-center d-flex" type="submit" disabled={isLoading}>
+                                {isLoading ?
+                                    (
+                                        <LoadingSpinner />
+                                    )
+                                    :
+                                    <>Add Product</>
+                                }
                             </Button>
                         </Form>
                     </Col>
                     <Col md="5" className="p-4">
                         <img className="w-100 m-auto"
-                             src={preview}
-                            alt="" />
+                            src={preview}
+                            alt=""
+                        />
                     </Col>
                 </Row>
             </Container>
+            <ModalSuccess
+                show={showSuccessAlert}
+                onHide={handleCloseModalSuccess}
+                content={"Success add new product"}
+            />
+
+            <ModalFailed
+                show={showFailedAlert}
+                onHide={handleCloseModalFailed}
+                content={"Failed add new product"}
+            />
         </>
     )
 }

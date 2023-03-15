@@ -35,10 +35,11 @@ export default function ProfilePage() {
             <Container className='p-5'>
                 <Row>
                     <Col md="4">
-                        <Container>
-                            <h4 className='headerColor fw-bold mb-4'>My Profile</h4>
+                    <h4 className='headerColor fw-bold mb-4'>My Profile</h4>
+                        <Container className='p-3'>
+                          
                             <Row>
-                                <Col md="6" className='d-flex '>
+                                <Col md="6">
                                     <Row className='d-flex justify-content-center'>
                                         <img className='w-100 mb-2' src={`${profile?.profile_picture}`} alt="" />
                                         <Button onClick={handleShowModalProfile}  className='w-75 main-button py-2 fs-6'>Update Profile</Button>
@@ -47,11 +48,19 @@ export default function ProfilePage() {
                                 <Col>
                                     <div className='mb-5'>
                                         <p className="headerColor fw-bold m-0 fs-5">Full Name</p>
-                                        <p className='m-0'>{profile?.name}</p>
-                                    </div>
-                                    <div>
+                                        <p className='m-0 mb-3'>{profile?.name}</p>
+                                    
                                         <p className="headerColor fw-bold m-0 fs-5">Email</p>
-                                        <p className='m-0'>{profile?.user.email}</p>
+                                        <p className='m-0 mb-3'>{profile?.user.email}</p>
+
+                                        <p className="headerColor fw-bold m-0 fs-5">Phone</p>
+                                        <p className='m-0 mb-3'>{profile?.phone}</p>
+
+                                        <p className="headerColor fw-bold m-0 fs-5">Post Code</p>
+                                        <p className='m-0 mb-3'>{profile?.post_code}</p>
+
+                                        <p className="headerColor fw-bold m-0 fs-5">Address</p>
+                                        <p className='m-0'>{profile?.address}</p>
                                     </div>
                                 </Col>
                             </Row>

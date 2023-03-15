@@ -5,15 +5,23 @@ import { useMutation, useQuery } from 'react-query'
 
 import { API } from "../config/api"
 import { useEffect, useState } from "react"
-import ModalSuccessAddProduct from "../components/modal/ModalSuccessAddProduct"
+
+import ModalFailed from "../components/modal/ModalFailed"
+import LoadingSpinner from "../components/LoadingSpinner"
+import ModalSuccessAddCart from "../components/modal/ModalSuccessAddCart"
 
 export default function DetailProductPage() {
+    const [isLoading, setIsLoading] = useState(false);
     const [showSuccessAlert, setShowSuccessAlert] = useState(false)
     const handleShowModalSuccess = () => setShowSuccessAlert(true)
     const handleCloseModalSuccess = () => {
         setShowSuccessAlert(false)
-        navigate('/cart');
+        navigate('/cart')
     }
+
+    const [showFailedAlert, setShowFailedAlert] = useState(false)
+    const handleShowModalFailed = () => setShowFailedAlert(true)
+    const handleCloseModalFailed = () => setShowFailedAlert(false)
     let { id } = useParams();
     let navigate = useNavigate();
     let { data: product } = useQuery('productDetailCache', async () => {
@@ -21,13 +29,13 @@ export default function DetailProductPage() {
         return response.data.data
     });
 
-   
-    
+
+
     document.title = "Waysbeans | Product Detail";
     const handleBuy = useMutation(async (e) => {
         try {
             e.preventDefault();
-
+            setIsLoading(true);
             const config = {
                 headers: {
                     'Content-type': 'application/json',
@@ -40,17 +48,19 @@ export default function DetailProductPage() {
             };
 
             const body = JSON.stringify(data);
-            
+
             const response = await API.post('/cart', body, config);
             window.dispatchEvent(new Event("badge"));
-        
+            setIsLoading(false)
             handleShowModalSuccess();
+
             console.log("Add Cart success :", response)
-           
+
 
         } catch (error) {
+            setIsLoading(false)
             console.log("transaction failed : ", error);
-            navigate('/cart');
+          
         }
     });
 
@@ -69,13 +79,30 @@ export default function DetailProductPage() {
                         <br />
                         <br />
                         <p className="d-flex justify-content-end fs-3 fw-bolder header-color">{ConvertFormatRupiah(product?.price)}</p>
-                        <Button onClick={(e) => { handleBuy.mutate(e) }} className="w-100 fs-4 main-button">Add Cart</Button>
+                        <Button onClick={(e) => { handleBuy.mutate(e) }} className="w-100 fs-4 main-button">
+                            {isLoading ?
+                                (
+                                    <LoadingSpinner />
+                                )
+                                :
+                                <>Add Cart</>
+                            }
+                        </Button>
                     </Col>
                 </Row>
             </Container>
-            <ModalSuccessAddProduct
+            <ModalSuccessAddCart
                 show={showSuccessAlert}
                 onHide={handleCloseModalSuccess}
+                image={product?.image}
+                price={product?.price}
+                name={product?.name}
+            />
+
+            <ModalFailed
+                show={showFailedAlert}
+                onHide={handleCloseModalFailed}
+                content={"Failed add product to cart"}
             />
         </>
     )

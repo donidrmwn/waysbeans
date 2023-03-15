@@ -17,7 +17,7 @@ const style = {
 
 
 export default function Shipping(props) {
-   //https://waysbeans-server.up.railway.app/api/v1/profile/user
+    const[loading,setIsLoading] = useState(false);
     const [form, setForm] = useState({
         name: '',
         email: '',
@@ -32,13 +32,17 @@ export default function Shipping(props) {
         setForm({
             ...form,
             name: responseProduct.data.data.name,
-            email: responseProduct.data.data.description,
-            phone: responseProduct.data.data.price,
-            post_code: responseProduct.data.data.stock,
-            address: responseProduct.data.data.image
+            email: responseProduct.data.data.user.email,
+            phone: responseProduct.data.data.phone,
+            post_code: responseProduct.data.data.post_code,
+            address: responseProduct.data.data.address
         });
         // setIsLoading(false)
     }
+
+    useEffect(() => {
+        getDataUpdate()
+    }, [])
 
     const handleChange = (e) => {
         setForm({
@@ -70,7 +74,7 @@ export default function Shipping(props) {
                 formData,
                 config
             );
-            console.log("success shipping: ",response.data.data.token);
+            console.log("success shipping: ", response.data.data.token);
             const token = response.data.data.token;
             window.snap.pay(token, {
                 onSuccess: function (result) {
@@ -78,36 +82,33 @@ export default function Shipping(props) {
                     window.dispatchEvent(new Event("badge"));
                     props.handleSuccess();
                 },
-                onPending: function (result){
+                onPending: function (result) {
                     console.log(result);
                     window.dispatchEvent(new Event("badge"));
                     props.handleSuccess();
                 },
-                onError: function (result){
+                onError: function (result) {
                     console.log(result);
                     window.dispatchEvent(new Event("badge"));
                     props.handleSuccess();
                 },
-                onClose: function(){
+                onClose: function () {
                     alert("you closed the popup without finishing the payment");
                 }
             })
-            
+
         } catch (error) {
             console.log("transaction failed: ", error)
         }
     });
 
     useEffect(() => {
-        //change this to the script source you want to load, for example this is snap.js sandbox env
         const midtransScriptUrl = "https://app.sandbox.midtrans.com/snap/snap.js";
-        //change this according to your client-key
+
         const myMidtransClientKey = process.env.REACT_APP_MIDTRANS_CLIENT_KEY;
 
         let scriptTag = document.createElement("script");
         scriptTag.src = midtransScriptUrl;
-        // optional if you want to set script attribute
-        // for example snap.js have data-client-key attribute
         scriptTag.setAttribute("data-client-key", myMidtransClientKey);
 
         document.body.appendChild(scriptTag);
@@ -119,55 +120,76 @@ export default function Shipping(props) {
     return (
         <>
             <Container>
-                <h3 className="mb-5">Confirm Order</h3>
+                <h2 className="mb-2">Confirm Order</h2>
+                <hr />
                 <Form onSubmit={(e) => handleSubmit.mutate(e)}>
-                    <Form.Control
-                        onChange={handleChange}
-                        name="name"
-                        type="text"
-                        style={style.textInput}
-                        placeholder="Name"
-                        className="mb-3 w-100 fs-5"
-                    />
-                    <Form.Control
-                        onChange={handleChange}
-                        name="email"
-                        type="email"
-                        style={style.textInput}
-                        placeholder="Email"
-                        className="mb-3 w-100 fs-5"
-                    />
-                    <Form.Control
-                        onChange={handleChange}
-                        name="phone"
-                        type="text"
-                        style={style.textInput}
-                        placeholder="Phone"
-                        className="mb-3 w-100 fs-5"
-                    />
-                    <Form.Control
-                        onChange={handleChange}
-                        name="post_code"
-                        type="text"
-                        style={style.textInput}
-                        placeholder="Post Code"
-                        className="mb-3 w-100 fs-5"
-                    />
-                    <Form.Control
-                        onChange={handleChange}
-                        name="address"
-                        type="text"
-                        style={style.textInput}
-                        placeholder="Address"
-                        className="mb-3 w-100 fs-5"
-                    />
+                    <Form.Label className="mb-3 w-100 fs-5">
+                        <h4>Name:</h4>
+                        <Form.Control
+                            onChange={handleChange}
+                            name="name"
+                            type="text"
+                            style={style.textInput}
+                            value={form?.name}
+                            placeholder="Name"
+
+                        />
+                    </Form.Label>
+                    <Form.Label className="mb-3 w-100 fs-5">
+                        <h4>Email:</h4>
+                        <Form.Control
+                            onChange={handleChange}
+                            name="email"
+                            type="email"
+                            style={style.textInput}
+                            value={form?.email}
+                            placeholder="Email"
+
+                        />
+                    </Form.Label>
+                    <Form.Label className="mb-3 w-100 fs-5">
+                        <h4>Phone:</h4>
+                        <Form.Control
+                            onChange={handleChange}
+                            name="phone"
+                            type="text"
+                            style={style.textInput}
+                            value={form?.phone}
+                            placeholder="Phone"
+
+                        />
+                    </Form.Label>
+                    <Form.Label className="mb-3 w-100 fs-5">
+                        <h4>Post Code:</h4>
+                        <Form.Control
+                            onChange={handleChange}
+                            name="post_code"
+                            type="text"
+                            style={style.textInput}
+                            value={form?.post_code}
+                            placeholder="Post Code"
+
+                        />
+                    </Form.Label>
+                    <Form.Label className="mb-3 w-100 fs-5">
+                        <h4>Address:</h4>
+                        <Form.Control
+                            onChange={handleChange}
+                            name="address"
+                            type="text"
+                            style={style.textInput}
+                            value={form?.address}
+                            placeholder="Address"
+
+                        />
+                    </Form.Label>
                     <Button className="main-button w-100 m-auto justify-content-center d-flex" type="submit">
                         Confirm
                     </Button>
                 </Form>
             </Container>
 
-           
+
         </>
     )
 }

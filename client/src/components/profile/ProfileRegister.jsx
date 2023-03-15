@@ -125,7 +125,7 @@ export default function ProfileRegister(props) {
                                     value={form?.address}
                                     onChange={handleOnChange}
                                     placeholder="Address"
-                                    className="w-100"
+                                    className="w-100 mb-3"
                                 />
                             </Form.Group>
                             <Form.Group controlId="formPostCode">

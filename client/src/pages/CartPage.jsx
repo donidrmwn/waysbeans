@@ -11,7 +11,7 @@ export default function CartPage() {
 
     const [message, setMessage] = useState(null)
     const [cart, setCart] = useState(false)
-
+   
    
     let navigate = useNavigate();
     let { data: carts, refetch: refetchCarts } = useQuery("cartsListCache", async () => {

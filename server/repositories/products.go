@@ -35,7 +35,8 @@ func (r *repository) GetProduct(ID int) (models.Product, error) {
 func (r *repository) FindTopProducts() ([]models.Product, error) {
 	var products []models.Product
 	//err := r.db.Where("checkout = ?", true).Preload("Product").Find(&carts).Error
-	err := r.db.Raw("SELECT * FROM ( SELECT t2.*, sum(order_quantity) order_quantity FROM `carts` t1 JOIN `products` t2 on t1.product_id = t2.id WHERE checkout = 1 group by product_id UNION SELECT *,0 FROM PRODUCTS WHERE id NOT IN (SELECT product_id FROM CARTS WHERE checkout = 1)) T1 ORDER BY order_quantity DESC;").Scan(&products).Error
+	err := r.db.Raw(`SELECT  * FROM ( SELECT t2.*, sum(order_quantity) order_quantity FROM carts t1 JOIN products t2 on t1.product_id = t2.id WHERE checkout = true group by product_id,t2.id UNION 
+	SELECT *,0 FROM PRODUCTS WHERE id NOT IN (SELECT product_id FROM CARTS WHERE checkout = true)) T1 ORDER BY order_quantity DESC`).Scan(&products).Error
 	return products, err
 }
 
