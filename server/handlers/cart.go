@@ -175,13 +175,7 @@ func (h *handlerCart) CreateCart(c echo.Context) error {
 	checkCart, _ := h.CartRepository.CheckCartProductID(request.ProductID)
 	fmt.Println(checkCart.ID)
 	if checkCart.ID != 0 {
-		err = h.UpdateCart(c)
-		if err != nil {
-			c.JSON(http.StatusBadRequest, dto.ErrorResult{
-				Code:    http.StatusBadRequest,
-				Message: err.Error(),
-			})
-		}
+		fmt.Println("Kita update ges")
 	}
 
 	data, err := h.CartRepository.CreateCart(cart)
