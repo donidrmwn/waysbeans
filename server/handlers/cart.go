@@ -183,7 +183,7 @@ func (h *handlerCart) CreateCart(c echo.Context) error {
 			})
 		}
 		if request.OrderQuantity != 0 {
-			checkCart.OrderQuantity = request.OrderQuantity + 1
+			checkCart.OrderQuantity = checkCart.OrderQuantity + request.OrderQuantity
 		}
 
 		data, err := h.CartRepository.UpdateCart(checkCart)
