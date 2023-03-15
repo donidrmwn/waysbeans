@@ -176,6 +176,51 @@ func (h *handlerCart) CreateCart(c echo.Context) error {
 	fmt.Println(checkCart.ID)
 	if checkCart.ID != 0 {
 		fmt.Println("Kita update ges")
+		product, _ := h.ProductRepository.GetProduct(request.ProductID)
+		if product.Stock == 0 {
+			return c.JSON(http.StatusBadRequest, dto.ErrorResult{
+				Code:    http.StatusBadRequest,
+				Message: "Maaf, stock barang habis.",
+			})
+		}
+		if product.Stock < request.OrderQuantity {
+			return c.JSON(http.StatusBadRequest, dto.ErrorResult{
+				Code:    http.StatusBadRequest,
+				Message: "Maaf, sisa stock barang sekarang adalah " + strconv.Itoa(product.Stock) + " Pcs, tidak mencukupi untuk order anda.",
+			})
+		}
+		if request.OrderQuantity != 0 {
+			cart.OrderQuantity = request.OrderQuantity
+		}
+
+		data, err := h.CartRepository.UpdateCart(cart)
+		if err != nil {
+			return c.JSON(http.StatusBadRequest, dto.ErrorResult{
+				Code:    http.StatusBadRequest,
+				Message: err.Error(),
+			})
+		}
+
+		var transaction models.Transaction
+		transaction, _ = h.TransactionRepository.GetUncheckedOutTransaction(int(userID))
+		transactionID := transaction.ID
+		carts, _ := h.CartRepository.FindUnCheckedOutCarts(transactionID)
+
+		var totalQty = 0
+		var subTotal = 0
+		for _, element := range carts {
+			if !element.Checkout {
+				totalQty = element.OrderQuantity + totalQty
+				product, _ := h.ProductRepository.GetProduct(element.ProductID)
+				subTotal = subTotal + (product.Price * element.OrderQuantity)
+			}
+		}
+
+		h.UpdateTransactionTotal(transaction, subTotal, totalQty)
+		return c.JSON(http.StatusOK, dto.SuccessResult{
+			Code: http.StatusOK,
+			Data: convertResponseCart(data),
+		})
 	}
 
 	data, err := h.CartRepository.CreateCart(cart)

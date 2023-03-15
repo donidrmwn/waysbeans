@@ -24,7 +24,7 @@ export default function DetailProductPage() {
     const handleCloseModalFailed = () => setShowFailedAlert(false)
     let { id } = useParams();
     let navigate = useNavigate();
-    let { data: product } = useQuery('productDetailCache', async () => {
+    let { data: product, refetch } = useQuery('productDetailCache', async () => {
         const response = await API.get('/product/' + id);
         return response.data.data
     });
@@ -60,10 +60,13 @@ export default function DetailProductPage() {
         } catch (error) {
             setIsLoading(false)
             console.log("transaction failed : ", error);
-          
+
         }
     });
 
+    useEffect(() => {
+        refetch()
+    }, [showSuccessAlert])
 
     return (
         <>
