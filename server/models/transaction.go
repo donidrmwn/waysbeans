@@ -8,7 +8,7 @@ type Transaction struct {
 	User      UserResponse   `json:"users"`
 	Name      string         `json:"name" gorm:"type: varchar(255)" form:"name"`
 	Email     string         `json:"email" gorm:"type: varchar(255)" form:"email"`
-	Phone     string         `json:"phone" gorm:"type: int" form:"phone"`
+	Phone     string         `json:"phone" gorm:"type: varchar(255)" form:"phone"`
 	PostCode  string         `json:"post_code" gorm:"type: varchar(255)" form:"post_code"`
 	Address   string         `json:"address" gorm:"type: varchar(255)" form:"address"`
 	Status    string         `json:"status" gorm:"type: varchar(255)" form:"status"`
