@@ -1,18 +1,27 @@
 package handlers
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	productdto "nis-waybeans/dto/product"
 	dto "nis-waybeans/dto/result"
 	"nis-waybeans/models"
 	"nis-waybeans/repositories"
+	"os"
 	"strconv"
 
+	"github.com/cloudinary/cloudinary-go/v2"
+	"github.com/cloudinary/cloudinary-go/v2/api/uploader"
 	"github.com/go-playground/validator"
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/labstack/echo/v4"
 )
+
+var ctx = context.Background()
+var CLOUD_NAME = os.Getenv("CLOUD_NAME")
+var API_KEY = os.Getenv("API_KEY")
+var API_SECRET = os.Getenv("API_SECRET")
 
 type handlerProduct struct {
 	ProductRepository repositories.ProductRepository
@@ -110,6 +119,8 @@ func (h *handlerProduct) CreateProduct(c echo.Context) error {
 	dataFile := c.Get("dataFile").(string)
 	price, _ := strconv.Atoi(c.FormValue("price"))
 	stock, _ := strconv.Atoi(c.FormValue("stock"))
+	cld, _ := cloudinary.NewFromParams(CLOUD_NAME, API_KEY, API_SECRET)
+	resp, err := cld.Upload.Upload(ctx, dataFile, uploader.UploadParams{Folder: "waysbeans"})
 
 	request := productdto.CreateProductRequest{
 		Name:        c.FormValue("name"),
@@ -120,7 +131,7 @@ func (h *handlerProduct) CreateProduct(c echo.Context) error {
 	}
 
 	validation := validator.New()
-	err := validation.Struct(request)
+	err = validation.Struct(request)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, dto.ErrorResult{
 			Code:    http.StatusBadRequest,
@@ -143,7 +154,7 @@ func (h *handlerProduct) CreateProduct(c echo.Context) error {
 		Price:       request.Price,
 		Description: request.Description,
 		Stock:       request.Stock,
-		Image:       request.Image,
+		Image:       resp.SecureURL,
 	}
 
 	data, err := h.ProductRepository.CreateProduct(product)
