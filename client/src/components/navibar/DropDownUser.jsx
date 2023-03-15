@@ -58,7 +58,7 @@ export default function DropDownUser(props) {
 
                     <Col md="6" className="p-0 m-auto">
                         <NavDropdown
-                            title={<Image style={style.roundedImage} className="m-auto " src={`http://localhost:5000/uploads/${profile?.profile_picture}`} alt="user pic" />} id="basic-nav-dropdown">
+                            title={<Image style={style.roundedImage} className="m-auto " src={`${profile?.profile_picture}`} alt="user pic" />} id="basic-nav-dropdown">
                             <div style={style.dropDownContainer}>
                                 <NavDropdown.Item
                                     as={Link}

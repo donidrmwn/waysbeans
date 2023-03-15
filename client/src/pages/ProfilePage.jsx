@@ -40,7 +40,7 @@ export default function ProfilePage() {
                             <Row>
                                 <Col md="6" className='d-flex '>
                                     <Row className='d-flex justify-content-center'>
-                                        <img className='w-100 mb-2' src={`http://localhost:5000/uploads/${profile?.profile_picture}`} alt="" />
+                                        <img className='w-100 mb-2' src={`${profile?.profile_picture}`} alt="" />
                                         <Button onClick={handleShowModalProfile}  className='w-75 main-button py-2 fs-6'>Update Profile</Button>
                                     </Row>
                                 </Col>

@@ -142,9 +142,9 @@ func (h *handlerCart) CreateCart(c echo.Context) error {
 			transactionIsMatch = true
 		}
 	}
-	transaction := models.Transaction{}
-	transaction, _ = h.TransactionRepository.GetUncheckedOutTransaction(int(userID))
-	fmt.Println(transaction.ID)
+	//transaction := models.Transaction{}
+	transaction, _ := h.TransactionRepository.GetUncheckedOutTransaction(int(userID))
+	fmt.Println("Transaction id: ", transaction.ID)
 	if transaction.ID == 0 {
 		transaction = models.Transaction{
 			ID:     transactionId,
@@ -154,8 +154,6 @@ func (h *handlerCart) CreateCart(c echo.Context) error {
 		transaction, _ = h.TransactionRepository.CreateTransaction(transaction)
 	}
 
-	request.TransactionID = transaction.ID
-
 	validation := validator.New()
 	err = validation.Struct(request)
 	if err != nil {
@@ -164,6 +162,8 @@ func (h *handlerCart) CreateCart(c echo.Context) error {
 			Message: err.Error(),
 		})
 	}
+
+	request.TransactionID = transaction.ID
 
 	cart := models.Cart{
 		ProductID:     request.ProductID,

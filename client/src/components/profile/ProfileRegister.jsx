@@ -16,7 +16,7 @@ export default function ProfileRegister(props) {
 
     async function getDataupdate() {
         const responseProfile = await API.get('/profile/user')
-        setPreview(`http://localhost:5000/uploads/${responseProfile.data.data.profile_picture}`)
+        setPreview(`${responseProfile.data.data.profile_picture}`)
         setProfileId(responseProfile.data.data.id);
         setForm({
             ...form,

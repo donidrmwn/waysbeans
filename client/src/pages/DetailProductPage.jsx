@@ -60,7 +60,7 @@ export default function DetailProductPage() {
             <Container>
                 <Row className="p-5 m-auto">
                     <Col>
-                        <Image className="w-100" alt="photo-product" src={`http://localhost:5000/uploads/${product?.image}`} />
+                        <Image className="w-100" alt="photo-product" src={`${product?.image}`} />
                     </Col>
                     <Col className="align-items-center m-auto justify-content-center">
                         <h1 className="header-color">{product?.name}</h1>
