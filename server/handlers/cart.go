@@ -145,6 +145,7 @@ func (h *handlerCart) CreateCart(c echo.Context) error {
 	//transaction := models.Transaction{}
 	transaction, _ := h.TransactionRepository.GetUncheckedOutTransaction(int(userID))
 	fmt.Println("Transaction id: ", transaction.ID)
+	fmt.Println("New Transaction id: ", transactionId)
 	if transaction.ID == 0 {
 		transaction = models.Transaction{
 			ID:     transactionId,
