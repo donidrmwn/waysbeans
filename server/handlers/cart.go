@@ -155,6 +155,7 @@ func (h *handlerCart) CreateCart(c echo.Context) error {
 		transaction, _ = h.TransactionRepository.CreateTransaction(transaction)
 	}
 
+	request.TransactionID = transaction.ID
 	validation := validator.New()
 	err = validation.Struct(request)
 	if err != nil {
@@ -163,8 +164,6 @@ func (h *handlerCart) CreateCart(c echo.Context) error {
 			Message: err.Error(),
 		})
 	}
-
-	request.TransactionID = transaction.ID
 
 	cart := models.Cart{
 		ProductID:     request.ProductID,
