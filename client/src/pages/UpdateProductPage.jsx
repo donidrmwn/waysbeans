@@ -60,7 +60,7 @@ export default function UpdateProductPage() {
             stock: responseProduct.data.data.stock,
             image: responseProduct.data.data.image
         });
-       // setIsLoading(false)
+        //setIsLoading(false)
     }
 
     useEffect(() => {

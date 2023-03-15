@@ -27,6 +27,7 @@ func convertResponseProfile(u models.Profile) profiledto.ProfileResponse {
 		Name:           u.Name,
 		Phone:          u.Phone,
 		Address:        u.Address,
+		PostCode:       u.PostCode,
 		UserID:         u.UserID,
 		ProfilePicture: u.ProfilePicture,
 		User:           u.User,
@@ -140,6 +141,7 @@ func (h *handlerProfile) UpdateProfile(c echo.Context) error {
 		Name:           c.FormValue("name"),
 		Phone:          c.FormValue("phone"),
 		Address:        c.FormValue("address"),
+		PostCode:       c.FormValue("post_code"),
 		UserID:         int(userID),
 		ProfilePicture: dataFile,
 	}
@@ -164,6 +166,9 @@ func (h *handlerProfile) UpdateProfile(c echo.Context) error {
 		profile.Address = request.Address
 	}
 
+	if request.PostCode != "" {
+		profile.PostCode = request.PostCode
+	}
 	if request.UserID != 0 {
 		profile.UserID = request.UserID
 	}

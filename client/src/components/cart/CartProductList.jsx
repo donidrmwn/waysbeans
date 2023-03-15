@@ -14,7 +14,7 @@ export default function CartProductList({incrementCart, decrementCart, carts, de
                         
                         {item.message}
                         <Col md="2" className="m-auto">
-                            <img className='w-100' src={`http://localhost:5000/uploads/${item.products.image}`} alt="" />
+                            <img className='w-100' src={`${item.products.image}`} alt="" />
                         </Col>
                         <Col className='d-flex align-items-center'>
                             <Form>

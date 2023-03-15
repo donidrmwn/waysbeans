@@ -11,6 +11,7 @@ export default function ProfileRegister(props) {
         name: '',
         phone: '',
         address: '',
+        post_code: '',
         profile_picture: ''
     });
 
@@ -23,6 +24,7 @@ export default function ProfileRegister(props) {
             name: responseProfile.data.data.name,
             phone: responseProfile.data.data.phone,
             address: responseProfile.data.data.address,
+            post_code: responseProfile.data.data.post_code,
             profile_picture: responseProfile.data.data.profile_picture,
         })
 
@@ -61,6 +63,7 @@ export default function ProfileRegister(props) {
             formData.set('name', form.name);
             formData.set('phone', form.phone);
             formData.set('address', form.address);
+            formData.set('post_code',form.post_code)
 
             const response = await API.patch(
                 '/profile/' + profileId,
@@ -122,6 +125,16 @@ export default function ProfileRegister(props) {
                                     value={form?.address}
                                     onChange={handleOnChange}
                                     placeholder="Address"
+                                    className="w-100"
+                                />
+                            </Form.Group>
+                            <Form.Group controlId="formPostCode">
+                                <Form.Control
+                                    type="text"
+                                    name="post_code"
+                                    value={form?.post_code}
+                                    onChange={handleOnChange}
+                                    placeholder="Post Code"
                                     className="w-100"
                                 />
                             </Form.Group>

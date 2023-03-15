@@ -20,7 +20,7 @@ export default function ProfileTransactions({ transactions }) {
                                 {item.carts?.map((cart, index) =>
                                     <Row key={index} className='px-3 align-items-center mb-2'>
                                         <Col md="2" >
-                                            <img className='w-100' src={`http://localhost:5000/uploads/${cart.products.image}`} alt="" />
+                                            <img className='w-100' src={`${cart.products.image}`} alt="" />
                                         </Col>
                                         <Col md="7">
                                             <div className='mb-3'>

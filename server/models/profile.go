@@ -6,6 +6,7 @@ type Profile struct {
 	ID             int          `json:"id" gorm:"primary_key:auto_increment"`
 	Name           string       `json:"name" gorm:"type: varchar(255)"`
 	Phone          string       `json:"phone" gorm:"type: varchar(255)"`
+	PostCode       string       `json:"post_code" gorm:"type: varchar(255)"`
 	Address        string       `json:"address" gorm:"type: varchar(255)"`
 	ProfilePicture string       `json:"profile_picture" gorm:"type: varchar(255)"`
 	UserID         int          `json:"user_id" gorm:"type: int" form:"user_id"`

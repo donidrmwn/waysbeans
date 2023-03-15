@@ -17,7 +17,7 @@ const style = {
 
 
 export default function Shipping(props) {
-   
+   //https://waysbeans-server.up.railway.app/api/v1/profile/user
     const [form, setForm] = useState({
         name: '',
         email: '',
@@ -25,6 +25,20 @@ export default function Shipping(props) {
         post_code: '',
         address: ''
     })
+
+
+    async function getDataUpdate() {
+        const responseProduct = await API.get('/profile/user')
+        setForm({
+            ...form,
+            name: responseProduct.data.data.name,
+            email: responseProduct.data.data.description,
+            phone: responseProduct.data.data.price,
+            post_code: responseProduct.data.data.stock,
+            address: responseProduct.data.data.image
+        });
+        // setIsLoading(false)
+    }
 
     const handleChange = (e) => {
         setForm({
@@ -42,6 +56,7 @@ export default function Shipping(props) {
                     'Content-type': 'multipart/form-data'
                 }
             };
+
 
             const formData = new FormData();
             formData.set('name', form.name);

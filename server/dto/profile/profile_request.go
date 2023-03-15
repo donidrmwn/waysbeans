@@ -16,5 +16,6 @@ type UpdateProfileRequest struct {
 	Phone          string `json:"phone" form:"phone" `
 	Address        string `json:"address" form:"address"`
 	UserID         int    `json:"user_id" form:"user_id"`
+	PostCode       string `json:"post_code" form:"post_code"`
 	ProfilePicture string `json:"profile_picture" form:"profile_picture"`
 }
