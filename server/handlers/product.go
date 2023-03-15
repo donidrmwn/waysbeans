@@ -119,9 +119,16 @@ func (h *handlerProduct) CreateProduct(c echo.Context) error {
 	dataFile := c.Get("dataFile").(string)
 	price, _ := strconv.Atoi(c.FormValue("price"))
 	stock, _ := strconv.Atoi(c.FormValue("stock"))
-	cld, _ := cloudinary.NewFromParams(CLOUD_NAME, API_KEY, API_SECRET)
-	resp, err := cld.Upload.Upload(ctx, dataFile, uploader.UploadParams{Folder: "waysbeans"})
 
+	cld, _ := cloudinary.NewFromParams(CLOUD_NAME, API_KEY, API_SECRET)
+
+	resp, err := cld.Upload.Upload(ctx, dataFile, uploader.UploadParams{Folder: "waysbeans"})
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, dto.ErrorResult{
+			Code:    http.StatusBadRequest,
+			Message: err.Error(),
+		})
+	}
 	request := productdto.CreateProductRequest{
 		Name:        c.FormValue("name"),
 		Description: c.FormValue("description"),
