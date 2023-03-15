@@ -148,9 +148,11 @@ func (h *handlerCart) CreateCart(c echo.Context) error {
 	fmt.Println("New Transaction id: ", transactionId)
 	if transaction.ID == 0 {
 		transaction = models.Transaction{
-			ID:     transactionId,
-			UserID: int(userID),
-			Status: "Waiting For Verification",
+			ID:       transactionId,
+			UserID:   int(userID),
+			Status:   "Waiting For Verification",
+			TotalQty: 0,
+			SubTotal: 0,
 		}
 		transaction, _ = h.TransactionRepository.CreateTransaction(transaction)
 	}
