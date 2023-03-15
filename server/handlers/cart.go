@@ -165,13 +165,6 @@ func (h *handlerCart) CreateCart(c echo.Context) error {
 		})
 	}
 
-	cart := models.Cart{
-		ProductID:     request.ProductID,
-		OrderQuantity: request.OrderQuantity,
-		Checkout:      false,
-		TransactionID: request.TransactionID,
-	}
-
 	checkCart, _ := h.CartRepository.CheckCartProductID(request.ProductID)
 	fmt.Println(checkCart.ID)
 	if checkCart.ID != 0 {
@@ -190,10 +183,10 @@ func (h *handlerCart) CreateCart(c echo.Context) error {
 			})
 		}
 		if request.OrderQuantity != 0 {
-			cart.OrderQuantity = request.OrderQuantity + 1
+			checkCart.OrderQuantity = request.OrderQuantity + 1
 		}
 
-		data, err := h.CartRepository.UpdateCart(cart)
+		data, err := h.CartRepository.UpdateCart(checkCart)
 		if err != nil {
 			return c.JSON(http.StatusBadRequest, dto.ErrorResult{
 				Code:    http.StatusBadRequest,
@@ -221,6 +214,13 @@ func (h *handlerCart) CreateCart(c echo.Context) error {
 			Code: http.StatusOK,
 			Data: convertResponseCart(data),
 		})
+	}
+
+	cart := models.Cart{
+		ProductID:     request.ProductID,
+		OrderQuantity: request.OrderQuantity,
+		Checkout:      false,
+		TransactionID: request.TransactionID,
 	}
 
 	data, err := h.CartRepository.CreateCart(cart)
