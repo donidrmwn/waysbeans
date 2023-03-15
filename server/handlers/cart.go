@@ -171,14 +171,11 @@ func (h *handlerCart) CreateCart(c echo.Context) error {
 		Checkout:      false,
 		TransactionID: request.TransactionID,
 	}
-
+	// back here
 	checkCart, _ := h.CartRepository.CheckCartProductID(request.ProductID)
 	fmt.Println(checkCart.ID)
 	if checkCart.ID != 0 {
-		return c.JSON(http.StatusBadRequest, dto.ErrorResult{
-			Code:    http.StatusBadRequest,
-			Message: "Product ini sudah masuk di cart sebelumnya",
-		})
+		h.UpdateCart(c)
 	}
 
 	data, err := h.CartRepository.CreateCart(cart)
