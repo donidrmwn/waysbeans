@@ -3,7 +3,7 @@ package models
 import "time"
 
 type Transaction struct {
-	ID        int            `json:"id" gorm:"primary_key:auto_increment"`
+	ID        int            `json:"id"`
 	UserID    int            `json:"user_id" gorm:"type: int" form:"user_id"`
 	User      UserResponse   `json:"users"`
 	Name      string         `json:"name" gorm:"type: varchar(255)" form:"name"`
