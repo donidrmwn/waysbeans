@@ -51,7 +51,7 @@ export default function UpdateProductPage() {
 
     async function getDataUpdate() {
         const responseProduct = await API.get('/product/' + id)
-        setPreview(`http://localhost:5000/uploads/${responseProduct.data.data.image}`)
+        setPreview(`${responseProduct.data.data.image}`)
         setForm({
             ...form,
             name: responseProduct.data.data.name,
