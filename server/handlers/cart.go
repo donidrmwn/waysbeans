@@ -383,6 +383,8 @@ func (h *handlerCart) DeleteCart(c echo.Context) error {
 		}
 	}
 
+	h.UpdateTransactionTotal(transaction, subTotal, totalQty)
+
 	return c.JSON(http.StatusOK, dto.SuccessResult{
 		Code: http.StatusOK,
 		Data: convertResponseCart(data),
