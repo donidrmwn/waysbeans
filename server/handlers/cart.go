@@ -375,10 +375,11 @@ func (h *handlerCart) DeleteCart(c echo.Context) error {
 	var subTotal = 0
 	for idx, element := range carts {
 		if !element.Checkout {
-			fmt.Println(carts[idx])
+
 			totalQty = element.OrderQuantity + totalQty
 			product, _ := h.ProductRepository.GetProduct(element.ProductID)
 			subTotal = subTotal + (product.Price * element.OrderQuantity)
+			fmt.Println("TOTAL SEKARANG", totalQty)
 		}
 	}
 
