@@ -363,6 +363,32 @@ func (h *handlerCart) DeleteCart(c echo.Context) error {
 			Message: err.Error(),
 		})
 	}
+	userLogin := c.Get("userLogin")
+	userID := userLogin.(jwt.MapClaims)["id"].(float64)
+	var transaction models.Transaction
+	transaction, _ = h.TransactionRepository.GetUncheckedOutTransaction(int(userID))
+	transactionID := transaction.ID
+	carts, err := h.CartRepository.FindUnCheckedOutCarts(transactionID)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, dto.ErrorResult{
+			Code:    http.StatusBadRequest,
+			Message: err.Error(),
+		})
+	}
+
+	var totalQty = 0
+	var subTotal = 0
+	for _, element := range carts {
+		if !element.Checkout {
+			totalQty = element.OrderQuantity + totalQty
+			product, _ := h.ProductRepository.GetProduct(element.ProductID)
+			subTotal = subTotal + (product.Price * element.OrderQuantity)
+		}
+
+	}
+
+	h.UpdateTransactionTotal(transaction, subTotal, totalQty)
+
 	return c.JSON(http.StatusOK, dto.SuccessResult{
 		Code: http.StatusOK,
 		Data: convertResponseCart(data),
