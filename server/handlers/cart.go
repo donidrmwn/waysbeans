@@ -360,7 +360,18 @@ func (h *handlerCart) DeleteCart(c echo.Context) error {
 	userID := userLogin.(jwt.MapClaims)["id"].(float64)
 	var transaction models.Transaction
 	transaction, _ = h.TransactionRepository.GetUncheckedOutTransaction(int(userID))
-	h.UpdateTransactionTotal(transaction, 0, 0)
+	transactionID := transaction.ID
+	carts, _ := h.CartRepository.FindUnCheckedOutCarts(transactionID)
+
+	var totalQty = 0
+	var subTotal = 0
+	for _, element := range carts {
+		if !element.Checkout {
+			totalQty = element.OrderQuantity + totalQty
+			product, _ := h.ProductRepository.GetProduct(element.ProductID)
+			subTotal = subTotal + (product.Price * element.OrderQuantity)
+		}
+	}
 
 	data, err := h.CartRepository.DeleteCart(cart, id)
 	if err != nil {
