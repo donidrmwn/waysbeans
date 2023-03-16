@@ -373,7 +373,7 @@ func (h *handlerCart) DeleteCart(c echo.Context) error {
 
 	var totalQty = 0
 	var subTotal = 0
-	for idx, element := range carts {
+	for _, element := range carts {
 		if !element.Checkout {
 
 			totalQty = element.OrderQuantity + totalQty
