@@ -356,6 +356,14 @@ func (h *handlerCart) DeleteCart(c echo.Context) error {
 		})
 	}
 
+	data, err := h.CartRepository.DeleteCart(cart, id)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, dto.ErrorResult{
+			Code:    http.StatusBadRequest,
+			Message: err.Error(),
+		})
+	}
+
 	userLogin := c.Get("userLogin")
 	userID := userLogin.(jwt.MapClaims)["id"].(float64)
 	var transaction models.Transaction
@@ -371,14 +379,6 @@ func (h *handlerCart) DeleteCart(c echo.Context) error {
 			product, _ := h.ProductRepository.GetProduct(element.ProductID)
 			subTotal = subTotal + (product.Price * element.OrderQuantity)
 		}
-	}
-
-	data, err := h.CartRepository.DeleteCart(cart, id)
-	if err != nil {
-		return c.JSON(http.StatusBadRequest, dto.ErrorResult{
-			Code:    http.StatusBadRequest,
-			Message: err.Error(),
-		})
 	}
 
 	return c.JSON(http.StatusOK, dto.SuccessResult{
