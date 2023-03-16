@@ -80,7 +80,6 @@ export default function CartPage() {
         try {
             await API.delete(`/cart/${id}`);
            // refetchCarts();
-          
         } catch (error) {
             console.log(error)
         }
