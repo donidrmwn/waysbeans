@@ -16,7 +16,7 @@ export default function DetailProductPage() {
     const handleShowModalSuccess = () => setShowSuccessAlert(true)
     const handleCloseModalSuccess = () => {
         setShowSuccessAlert(false)
-        navigate('/cart')
+       // navigate('/cart')
     }
 
     const [showFailedAlert, setShowFailedAlert] = useState(false)

@@ -46,7 +46,7 @@ func (r *repository) GetTransaction(ID int) (models.Transaction, error) {
 
 func (r *repository) GetUncheckedOutTransactionByUserID(userID int) (models.Transaction, error) {
 	var transaction models.Transaction
-	err := r.db.Where("user_id = ? and status = 'Waiting For Verification'", userID).Preload("User").First(&transaction).Error
+	err := r.db.Order("id desc").Where("user_id = ? and status = 'Waiting For Verification'", userID).Preload("User").First(&transaction).Error
 	return transaction, err
 }
 

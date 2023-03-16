@@ -34,9 +34,9 @@ export default function Navibar() {
         setShowRegister(true);
     };
 
-    let { data: carts, refetch } = useQuery('cartsCache', async () => {
+    let { data: transaction, refetch } = useQuery('transactionCache', async () => {
        // if (localStorage.token) {
-        const response = await API.get('/carts/not-checkout');     
+        const response = await API.get('/transactions/unfinished');     
         return response.data.data
         //}    
     });
@@ -86,7 +86,7 @@ export default function Navibar() {
                                         <>
                                             {/* {carts?.length > 0 && */}
                                             <DropDownUser
-                                                badgeQty={carts?.length}
+                                                badgeQty={transaction?.total_qty}
                                             />
                                             {/* } */}
                                         </>

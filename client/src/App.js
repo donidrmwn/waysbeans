@@ -19,6 +19,7 @@ import CartPage from './pages/CartPage';
 
 
 
+
 function App() {
   let navigate = useNavigate();
   const [state, dispatch] = useContext(UserContext);

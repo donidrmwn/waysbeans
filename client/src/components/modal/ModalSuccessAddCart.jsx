@@ -25,6 +25,7 @@ export default function ModalSuccessAddCart({ show, onHide, image, price, name }
                             />
                         </Row>
                         <Row md="10">
+                        <h3 className="mb-2">Our Products</h3>
                             {products?.map((item, index) => (
                                 <CardProduct product={item} key={index} onHide={onHide}/>
 
