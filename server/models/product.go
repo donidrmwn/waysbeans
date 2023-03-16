@@ -20,6 +20,7 @@ type ProductResponse struct {
 	Price       int    `json:"price"`
 	Description string `json:"description"`
 	Image       string `json:"image"`
+	Stock       int    `json:"stock"`
 }
 
 func (ProductResponse) TableName() string {

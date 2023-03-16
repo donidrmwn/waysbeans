@@ -37,7 +37,6 @@ export default function Navibar() {
     let { data: transaction, refetch } = useQuery('transactionCache', async () => {
        // if (localStorage.token) {
         const response = await API.get('/transactions/unfinished');     
-        console.log(response)
         return response.data.data
         //}    
     });
@@ -47,7 +46,6 @@ export default function Navibar() {
         //refetch();
         window.addEventListener('badge', () => {
             refetch()
-           
         })
     }, [])
  

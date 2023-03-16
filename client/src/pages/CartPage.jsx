@@ -8,14 +8,14 @@ import { useNavigate } from "react-router";
 
 
 export default function CartPage() {
-
-    const [message, setMessage] = useState(null)
     const [cart, setCart] = useState(false)
-   
-   
+
     let navigate = useNavigate();
     let { data: carts, refetch: refetchCarts } = useQuery("cartsListCache", async () => {
         const response = await API.get("carts/not-checkout");
+        response.data.data.forEach(element => {
+            element.message = null;
+        });
         return response.data.data;
     })
 
@@ -29,7 +29,6 @@ export default function CartPage() {
             product_id: product_id,
             order_quantity: orderQuantity + 1,
         })
-
     }
 
     const decrementCart = (id, orderQuantity, product_id) => {
@@ -38,7 +37,6 @@ export default function CartPage() {
             product_id: product_id,
             order_quantity: orderQuantity - 1,
         })
-
     }
 
     const updateCart = useMutation(async (id) => {
@@ -49,36 +47,30 @@ export default function CartPage() {
                     'Content-type': 'application/json',
                 },
             };
-            const response = await API.patch(
-                '/cart/' + id,
-                {
-                    product_id: cart.product_id,
-                    order_quantity: cart.order_quantity
-                },
-                config
-            );
-
-            setMessage(null)
+            const data = {
+                product_id: cart.product_id,
+                order_quantity: cart.order_quantity
+            }
+            const body = JSON.stringify(data)
+            await API.patch('/cart/' + id, body, config);
+            window.dispatchEvent(new Event("badge"))
+            setMessageCarts(null)
             refetchCarts()
-           // setMessageCarts()
             refetchTransaction()
-
         } catch (error) {
-            console.log(error.response.data.message)
             const newAlert = (
                 <Alert variant="danger" className="py-1">
                     {error.response.data.message}
                 </Alert>
             )
-            setMessage(newAlert)
-           // setMessageCarts()
-            // alert(error.response.data.message)
+            setMessageCarts(newAlert)
         }
     })
 
     const deleteCart = useMutation(async (id) => {
         try {
             await API.delete(`/cart/${id}`);
+            window.dispatchEvent(new Event("badge"))
             refetchCarts();
         } catch (error) {
             console.log(error)
@@ -86,18 +78,16 @@ export default function CartPage() {
     });
 
     useEffect(() => {
-        
         if (cart) {
             updateCart.mutate(cart.id)
-            window.dispatchEvent(new Event("badge"));
         }
     }, [cart])
 
-    
-    // function setMessageCarts() {
-    //     var index = carts.findIndex(x => x.id === cart.id)
-    //     carts[index].message = message
-    // }
+
+    function setMessageCarts(message) {
+        var index = carts.findIndex(x => x.id === cart.id)
+        carts[index].message = message
+    }
     return (
         <>
 
