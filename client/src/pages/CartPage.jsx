@@ -79,7 +79,7 @@ export default function CartPage() {
     const deleteCart = useMutation(async (id) => {
         try {
             await API.delete(`/cart/${id}`);
-           // refetchCarts();
+            refetchCarts();
         } catch (error) {
             console.log(error)
         }
