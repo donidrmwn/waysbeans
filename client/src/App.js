@@ -19,7 +19,6 @@ import CartPage from './pages/CartPage';
 
 
 
-
 function App() {
   let navigate = useNavigate();
   const [state, dispatch] = useContext(UserContext);
@@ -38,9 +37,10 @@ function App() {
 
   useEffect(() => {
     if (localStorage.token) {
+  
       setAuthToken(localStorage.token);
       checkUser();
-      //window.dispatchEvent(new Event("badge"));
+      window.dispatchEvent(new Event("badge"));
     } else {
       setIsLoading(false);
     }

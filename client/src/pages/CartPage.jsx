@@ -5,7 +5,7 @@ import { API } from '../config/api';
 import { Row, Col, Container, Button, Alert } from 'react-bootstrap'
 import CartSubTotal from "../components/cart/CartSubTotal";
 import { useNavigate } from "react-router";
-import ModalShipping from "../components/modal/ModalShipping"
+
 
 export default function CartPage() {
 
@@ -60,7 +60,7 @@ export default function CartPage() {
 
             setMessage(null)
             refetchCarts()
-            setMessageCarts()
+           // setMessageCarts()
             refetchTransaction()
 
         } catch (error) {
@@ -71,7 +71,7 @@ export default function CartPage() {
                 </Alert>
             )
             setMessage(newAlert)
-            setMessageCarts()
+           // setMessageCarts()
             // alert(error.response.data.message)
         }
     })
@@ -80,24 +80,25 @@ export default function CartPage() {
         try {
             await API.delete(`/cart/${id}`);
             refetchCarts();
-            window.dispatchEvent(new Event("badge"));
+          
         } catch (error) {
             console.log(error)
         }
     });
 
     useEffect(() => {
+        
         if (cart) {
             updateCart.mutate(cart.id)
+            window.dispatchEvent(new Event("badge"));
         }
     }, [cart])
 
     
-    function setMessageCarts() {
-        var index = carts.findIndex(x => x.id === cart.id)
-        carts[index].message = message
-        console.log("error:", message)
-    }
+    // function setMessageCarts() {
+    //     var index = carts.findIndex(x => x.id === cart.id)
+    //     carts[index].message = message
+    // }
     return (
         <>
 
