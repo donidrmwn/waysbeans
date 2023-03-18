@@ -71,6 +71,7 @@ export default function ProfileRegister(props) {
                 config
             );
             props.refetchProfile()
+            props.onHide()
             console.log(response);
 
         } catch (error) {

@@ -1,13 +1,17 @@
 package handlers
 
 import (
+	"context"
 	"net/http"
 	profiledto "nis-waybeans/dto/profile"
 	dto "nis-waybeans/dto/result"
 	"nis-waybeans/models"
 	"nis-waybeans/repositories"
+	"os"
 	"strconv"
 
+	"github.com/cloudinary/cloudinary-go/v2"
+	"github.com/cloudinary/cloudinary-go/v2/api/uploader"
 	"github.com/go-playground/validator"
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/labstack/echo/v4"
@@ -133,9 +137,24 @@ func (h *handlerProfile) CreateProfile(c echo.Context) error {
 }
 
 func (h *handlerProfile) UpdateProfile(c echo.Context) error {
+	var ctx = context.Background()
+	var CLOUD_NAME = os.Getenv("CLOUD_NAME")
+	var API_KEY = os.Getenv("API_KEY")
+	var API_SECRET = os.Getenv("API_SECRET")
+
 	userLogin := c.Get("userLogin")
 	userID := userLogin.(jwt.MapClaims)["id"].(float64)
 	dataFile := c.Get("dataFile").(string)
+
+	cld, _ := cloudinary.NewFromParams(CLOUD_NAME, API_KEY, API_SECRET)
+
+	resp, err := cld.Upload.Upload(ctx, dataFile, uploader.UploadParams{Folder: "waysbeans"})
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, dto.ErrorResult{
+			Code:    http.StatusBadRequest,
+			Message: err.Error(),
+		})
+	}
 
 	request := profiledto.UpdateProfileRequest{
 		Name:           c.FormValue("name"),
@@ -143,7 +162,7 @@ func (h *handlerProfile) UpdateProfile(c echo.Context) error {
 		Address:        c.FormValue("address"),
 		PostCode:       c.FormValue("post_code"),
 		UserID:         int(userID),
-		ProfilePicture: dataFile,
+		ProfilePicture: resp.SecureURL,
 	}
 
 	profile, err := h.ProfileRepository.GetProfileByUserID(int(userID))
