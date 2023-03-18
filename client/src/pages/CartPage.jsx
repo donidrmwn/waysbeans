@@ -8,6 +8,8 @@ import { useNavigate } from "react-router";
 
 
 export default function CartPage() {
+    const title = "Cart";
+    document.title = "Waysbeans | " + title;
     const [cart, setCart] = useState(false)
 
     let navigate = useNavigate();

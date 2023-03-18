@@ -7,7 +7,6 @@ export default function ProfileTransactions({ transactions }) {
 
     return (
         <>
-
             {transactions?.length !== 0 ?
                 <>
                     {transactions?.map((item, index) => (
@@ -41,9 +40,17 @@ export default function ProfileTransactions({ transactions }) {
                                                         imgSize="15px" />
                                                 </div>
                                                 <img className='w-50 m-auto' src="qr_code.png" alt="" />
-                                                <div className="waitingTrans mt-2 d-flex  justify-content-center align-items-center w-100 p-1">
-                                                    <p className='m-0'>{item.status}</p>
-                                                </div>
+
+                                                {item.status == "Success" ?
+                                                    <div className="success-trans mt-2 d-flex  justify-content-center align-items-center w-100 p-1">
+                                                        <p className='m-0'>{item.status}</p>
+                                                    </div>
+                                                    :
+                                                    <div className="waiting-trans mt-2 d-flex  justify-content-center align-items-center w-100 p-1">
+                                                        <p className='m-0'>{item.status}</p>
+                                                    </div>
+                                                }
+                                                
                                             </div>
                                         </Col>
                                     </Row>
