@@ -377,7 +377,7 @@ func SendMail(status string, transaction models.Transaction) {
 
 		var productList = ""
 		for _, element := range transaction.Cart {
-
+			fmt.Println("Transaction cart:", element)
 			productList = productList + " " + element.Product.Name
 		}
 		var subTotal = strconv.Itoa(transaction.SubTotal)
