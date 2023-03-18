@@ -1,15 +1,16 @@
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Alert, Container, Button } from 'react-bootstrap';
 import { useMutation } from 'react-query';
 import { useNavigate } from 'react-router-dom';
 import { UserContext } from '../../context/userContext';
 
 import { API, setAuthToken } from '../../config/api';
+import ModalSuccessAddCart from '../modal/ModalSuccessAddCart';
 
-export default function Login({ onHide }) {
+export default function Login({ onHide, product, handleSuccessCart }) {
     let navigate = useNavigate();
 
-    const [_, dispatch] = useContext(UserContext);
+    const [state, dispatch] = useContext(UserContext);
     const [message, setMessage] = useState(null);
     const [form, setForm] = useState({
         email: '',
@@ -18,7 +19,6 @@ export default function Login({ onHide }) {
 
     const { email, password } = form;
 
-
     const handleChange = (e) => {
         setForm({
             ...form,
@@ -26,13 +26,13 @@ export default function Login({ onHide }) {
         });
     };
 
+
+
     const handleSubmit = useMutation(async (e) => {
         try {
             e.preventDefault();
-
             const response = await API.post('/login', form);
             console.log('login success : ', response);
-
             dispatch({
                 type: 'LOGIN_SUCCESS',
                 payload: response.data.data,
@@ -40,13 +40,6 @@ export default function Login({ onHide }) {
 
             setAuthToken(localStorage.token);
             console.log("Login", response.data.data.role)
-            console.log("")
-            if (response.data.data.role === 'admin') {
-                navigate('/list-transaction');
-            } else {
-                console.log("navigate ke page user")
-                navigate('/profile');
-            }
 
             const alert = (
                 <Alert variant="success" className='py-1'>
@@ -65,6 +58,46 @@ export default function Login({ onHide }) {
             console.log("login failed: ", error)
         }
     });
+
+    const handleLogin = useMutation(async () => {
+        try {
+            if (state.role === 'admin') {
+                navigate('/list-transaction');
+            } else {
+
+                if (product) {
+                    const data = {
+                        product_id: product.id,
+                        order_quantity: 1,
+                    };
+
+                    const config = {
+                        headers: {
+                            'Content-type': 'application/json',
+                        },
+                    };
+                    const body = JSON.stringify(data);
+                    const response = await API.post('/cart', body, config);
+                    window.dispatchEvent(new Event("badge"));
+                    handleSuccessCart()
+                } else {
+                    navigate('/profile')
+                }
+
+            }
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    )
+    useEffect(() => {
+        if (state.isLogin) {
+            handleLogin.mutate()
+        }
+        console.log("State", state)
+    }, [state])
+
 
     return (
         <>
@@ -97,6 +130,8 @@ export default function Login({ onHide }) {
                     </div>
                 </form>
             </Container>
+
+
         </>
     )
 

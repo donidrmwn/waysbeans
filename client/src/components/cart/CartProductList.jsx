@@ -48,8 +48,8 @@ export default function CartProductList({incrementCart, decrementCart, carts, de
                         </Col>
                         <Col className="d-grid align-items-center justify-content-end">
                             <div>
-                                <p>{item.products.stock}</p>
-                                <p>{ConvertFormatRupiah(item.products.price)}</p>
+                                <p className='d-flex justify-content-end'>Stock: {item.products.stock} pcs</p>
+                                <p className='d-flex justify-content-end'>{ConvertFormatRupiah(item.products.price)}</p>
                                 <img as={Button} onClick={() => deleteCart.mutate(item.id)} className='image-fluid float-end w-25' src="/trash.png" alt="" />
 
                             </div>

@@ -4,20 +4,46 @@ import { ConvertFormatRupiah } from "../utils"
 import { useMutation, useQuery } from 'react-query'
 
 import { API } from "../config/api"
-import { useEffect, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 
 import ModalFailed from "../components/modal/ModalFailed"
 import LoadingSpinner from "../components/LoadingSpinner"
 import ModalSuccessAddCart from "../components/modal/ModalSuccessAddCart"
+import { UserContext } from "../context/userContext"
+import ModalLogin from "../components/modal/ModalLogin"
+import ModalRegister from "../components/modal/ModalRegister"
 
 export default function DetailProductPage() {
+    const [state, _] = useContext(UserContext)
     const [isLoading, setIsLoading] = useState(false);
     const [showSuccessAlert, setShowSuccessAlert] = useState(false)
+    const [showLogin, setShowLogin] = useState(false);
+    const [showRegister, setShowRegister] = useState(false);
+
     const handleShowModalSuccess = () => setShowSuccessAlert(true)
     const handleCloseModalSuccess = () => {
         setShowSuccessAlert(false)
-       // navigate('/cart')
+        // navigate('/cart')
     }
+    const handleCloseRegister = () => setShowRegister(false)
+
+    const handleCloseLogin = () => setShowLogin(false)
+    const handleShowLogin = () => setShowLogin(true)
+
+    const popLogin = () => {
+        setShowLogin(true);
+        setShowRegister(false);
+    };
+    const popRegister = () => {
+        setShowLogin(false);
+        setShowRegister(true);
+    };
+
+    const popSuccessCart = () => {
+        setShowLogin(false);
+        setShowSuccessAlert(true)
+    }
+
 
     const [showFailedAlert, setShowFailedAlert] = useState(false)
     const handleShowModalFailed = () => setShowFailedAlert(true)
@@ -32,31 +58,34 @@ export default function DetailProductPage() {
 
 
     document.title = "Waysbeans | Product Detail";
-    const handleBuy = useMutation(async (e) => {
+    const handleCart = useMutation(async (e) => {
         try {
             e.preventDefault();
-            setIsLoading(true);
-            const config = {
-                headers: {
-                    'Content-type': 'application/json',
-                },
-            };
+            
+            if (state.isLogin) {
+            
+                setIsLoading(true);
+                const config = {
+                    headers: {
+                        'Content-type': 'application/json',
+                    },
+                };
 
-            const data = {
-                product_id: product.id,
-                order_quantity: 1,
-            };
+                const data = {
+                    product_id: product.id,
+                    order_quantity: 1,
+                };
 
-            const body = JSON.stringify(data);
-
-            const response = await API.post('/cart', body, config);
-            window.dispatchEvent(new Event("badge"));
-            setIsLoading(false)
-            handleShowModalSuccess();
-
-            console.log("Add Cart success :", response)
-
-
+                const body = JSON.stringify(data);
+                const response = await API.post('/cart', body, config);
+                window.dispatchEvent(new Event("badge"));
+                setIsLoading(false)
+                handleShowModalSuccess();
+                console.log("Add Cart success :", response)
+            }
+            else {
+                handleShowLogin()
+            }
         } catch (error) {
             setIsLoading(false)
             console.log("transaction failed : ", error);
@@ -82,13 +111,15 @@ export default function DetailProductPage() {
                         <br />
                         <br />
                         <p className="d-flex justify-content-end fs-3 fw-bolder header-color">{ConvertFormatRupiah(product?.price)}</p>
-                        <Button onClick={(e) => { handleBuy.mutate(e) }} className="w-100 fs-4 main-button">
+                        <Button disabled={product?.stock == 0 ? true : false} onClick={(e) => { handleCart.mutate(e) }} className="w-100 fs-4 main-button">
                             {isLoading ?
                                 (
                                     <LoadingSpinner />
                                 )
                                 :
-                                <>Add Cart</>
+                                <>
+                                    {product?.stock <= 0 ? <>Out of stock</> : <> Add to cart </>}
+                                </>
                             }
                         </Button>
                     </Col>
@@ -107,6 +138,21 @@ export default function DetailProductPage() {
                 onHide={handleCloseModalFailed}
                 content={"Failed add product to cart"}
             />
+
+            <ModalLogin
+                show={showLogin}
+                onHide={() => handleCloseLogin()}
+                handleRegister={() => popRegister()}
+                product={product}
+                handleSuccessCart={() => popSuccessCart()}
+            />
+
+            <ModalRegister
+                show={showRegister}
+                onHide={() => handleCloseRegister()}
+                handleLogin={() => popLogin()}
+            />
+
         </>
     )
 }

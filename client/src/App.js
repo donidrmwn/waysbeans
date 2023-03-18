@@ -37,7 +37,7 @@ function App() {
 
   useEffect(() => {
     if (localStorage.token) {
-  
+
       setAuthToken(localStorage.token);
       checkUser();
       window.dispatchEvent(new Event("badge"));
@@ -77,9 +77,9 @@ function App() {
           <Navibar />
           <Routes>
             <Route exact path='/' element={<LandingPage />} />
+            <Route path="/product/:id" element={<DetailProductPage />} />
             <Route element={<PrivateRouteLogin />}>
               <Route element={<PrivateRouteUser />}>
-                <Route path="/product/:id" element={<DetailProductPage />} />
                 <Route path="/profile" element={<ProfilePage />} />
                 <Route path="/cart" element={<CartPage />} />
               </Route>

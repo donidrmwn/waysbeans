@@ -40,9 +40,6 @@ export default function DropDownUser(props) {
         })
         navigate("/")
     }
-
-
-    
     return (
         <>
             <Col>
@@ -51,7 +48,7 @@ export default function DropDownUser(props) {
                         <div className="col-sm-4">
                             <div className="item">
                                 <NavLink as={Link} to="/cart">
-                                    <span className="notify-badge" >{props.badgeQty}</span>
+                                    {props.badgeQty ? <span className="notify-badge" >{props.badgeQty}</span> : <></>}
                                     <Image role="button" style={style.avatarImage} className="m-auto me-4" src={`/${"cart.png"}`} />
                                 </NavLink>
                             </div>

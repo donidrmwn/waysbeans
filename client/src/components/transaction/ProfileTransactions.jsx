@@ -30,11 +30,11 @@ export default function ProfileTransactions({ transactions }) {
                                             <div>
                                                 <p className='m-0'>Price: {ConvertFormatRupiah(cart.products.price)}</p>
                                                 <p className='m-0'>Qty: {cart.order_quantity}</p>
-
+                                                <h5 className='m-0 d-flex justify-content-end'> {ConvertFormatRupiah(cart.order_quantity * cart.products.price)}</h5>
                                             </div>
                                             <hr />
                                         </Col>
-                                        <Col className='d-flex align-items-center' md="3">
+                                        <Col className='d-flex align-items-center justify-content-center' md="3">
                                             <div className='d-grid ' >
                                                 <div className='m-auto mb-3'>
                                                     <Brand

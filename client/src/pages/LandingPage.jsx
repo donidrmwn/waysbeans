@@ -30,7 +30,6 @@ export default function LandingPage() {
         return response.data.data;
     })
 
-
     return (
         <>
             <Container className="p-5" >
@@ -59,7 +58,6 @@ export default function LandingPage() {
                     <Row md="4">
                         {products?.map((item, index) => (
                             <CardProduct product={item} key={index} />
-
                         ))}
                     </Row>
                 </Container>

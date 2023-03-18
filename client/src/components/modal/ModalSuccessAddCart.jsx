@@ -14,6 +14,7 @@ export default function ModalSuccessAddCart({ show, onHide, image, price, name }
         <>
 
             <Modal className="modal-xl" show={show} onHide={onHide} centered>
+            
                 <Modal.Title className="p-3">Success add to cart</Modal.Title>
                 <Modal.Body className=" m-auto p-3 w-100">
                     <Col>
@@ -24,7 +25,7 @@ export default function ModalSuccessAddCart({ show, onHide, image, price, name }
                                 name={name}
                             />
                         </Row>
-                        <Row md="10">
+                        <Row  md="10">
                         <h3 className="mb-2">Our Products</h3>
                             {products?.map((item, index) => (
                                 <CardProduct product={item} key={index} onHide={onHide}/>
