@@ -16,7 +16,8 @@ type TransactionRepository interface {
 	UpdateTransaction(transaction models.Transaction) (models.Transaction, error)
 	DeleteTransaction(transaction models.Transaction, ID int) (models.Transaction, error)
 	GetUncheckedOutTransaction(UserID int) (models.Transaction, error)
-	FindTransactionsByDate(userID int, startData time.Time, endDate time.Time) ([]models.Transaction, error)
+	FindTransactionsByDate(startData time.Time, endDate time.Time) ([]models.Transaction, error)
+	FindTransactionsByDateUser(userId int, startData time.Time, endDate time.Time) ([]models.Transaction, error)
 	FindTransactionsByProductID(userID int, productID int) ([]models.Transaction, error)
 	UpdateStatusTransaction(status string, orderId int) (models.Transaction, error)
 	FindTransactionsByUser(userID int) ([]models.Transaction, error)
@@ -77,9 +78,15 @@ func (r *repository) GetUncheckedOutTransaction(userID int) (models.Transaction,
 	return transaction, err
 }
 
-func (r *repository) FindTransactionsByDate(userID int, startDate time.Time, endDate time.Time) ([]models.Transaction, error) {
+func (r *repository) FindTransactionsByDateUser(userID int, startDate time.Time, endDate time.Time) ([]models.Transaction, error) {
 	var transactions []models.Transaction
 	err := r.db.Where("user_id = ? AND CAST(updated_at AS DATE) BETWEEN ? AND ?", userID, startDate, endDate).Preload("User").Preload("Cart.Product").Find(&transactions).Error
+	return transactions, err
+}
+
+func (r *repository) FindTransactionsByDate(startDate time.Time, endDate time.Time) ([]models.Transaction, error) {
+	var transactions []models.Transaction
+	err := r.db.Where("CAST(updated_at AS DATE) BETWEEN ? AND ?", startDate, endDate).Preload("User").Preload("Cart.Product").Find(&transactions).Error
 	return transactions, err
 }
 

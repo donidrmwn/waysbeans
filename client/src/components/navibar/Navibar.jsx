@@ -16,7 +16,7 @@ export default function Navibar() {
     const [state] = useContext(UserContext);
     const [showLogin, setShowLogin] = useState(false);
     const [showRegister, setShowRegister] = useState(false);
-  
+
 
     const handleCloseLogin = () => setShowLogin(false)
     const handleShowLogin = () => setShowLogin(true)
@@ -35,12 +35,12 @@ export default function Navibar() {
     };
 
     let { data: transaction, refetch } = useQuery('transactionCache', async () => {
-       // if (localStorage.token) {
-        const response = await API.get('/transactions/unfinished');     
-        return response.data.data
-        //}    
+        if (localStorage.token && state.user.role === "customer") {
+            const response = await API.get('/transactions/unfinished');
+            return response.data.data
+        }
     });
-    
+
 
     useEffect(() => {
         //refetch();
@@ -48,9 +48,9 @@ export default function Navibar() {
             refetch()
         })
     }, [])
- 
 
-    
+
+
     return (
         <>
             <Navbar style={{ boxShadow: "0 5px 300px gray" }} collapseOnSelect expand="lg" bg="light" variant="light" className="mb-5" sticky="top">

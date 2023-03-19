@@ -102,13 +102,45 @@ func (h *handlerTransaction) FindTransactionsByDate(c echo.Context) error {
 	startDate := c.QueryParam("start_date")
 	endDate := c.QueryParam("end_date")
 	userLogin := c.Get("userLogin")
-	userID := userLogin.(jwt.MapClaims)["id"].(float64)
+	role := userLogin.(jwt.MapClaims)["role"].(string)
+	if role != "admin" {
+		return c.JSON(http.StatusBadRequest, dto.ErrorResult{
+			Code:    http.StatusBadRequest,
+			Message: "Yang admin admin aja",
+		})
+	}
 	dateFormat := "2006-01-02"
 	startDateFormatted, _ := time.Parse(dateFormat, startDate)
 	endDateFormatted, _ := time.Parse(dateFormat, endDate)
 	fmt.Println("Start date", startDateFormatted)
 	fmt.Println("End date", endDateFormatted)
-	transactions, err := h.TransactionRepository.FindTransactionsByDate(int(userID), startDateFormatted, endDateFormatted)
+	transactions, err := h.TransactionRepository.FindTransactionsByDate(startDateFormatted, endDateFormatted)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, dto.ErrorResult{
+			Code:    http.StatusBadRequest,
+			Message: err.Error(),
+		})
+	}
+
+	return c.JSON(http.StatusOK, dto.SuccessResult{
+		Code: http.StatusOK,
+		Data: transactions,
+	})
+
+}
+
+func (h *handlerTransaction) FindTransactionsByDateUser(c echo.Context) error {
+	startDate := c.QueryParam("start_date")
+	endDate := c.QueryParam("end_date")
+	userLogin := c.Get("userLogin")
+	userId := userLogin.(jwt.MapClaims)["id"].(float64)
+
+	dateFormat := "2006-01-02"
+	startDateFormatted, _ := time.Parse(dateFormat, startDate)
+	endDateFormatted, _ := time.Parse(dateFormat, endDate)
+	fmt.Println("Start date", startDateFormatted)
+	fmt.Println("End date", endDateFormatted)
+	transactions, err := h.TransactionRepository.FindTransactionsByDateUser(int(userId), startDateFormatted, endDateFormatted)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, dto.ErrorResult{
 			Code:    http.StatusBadRequest,

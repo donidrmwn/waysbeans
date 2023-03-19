@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { UserContext } from '../../context/userContext';
 
 import { API, setAuthToken } from '../../config/api';
-import ModalSuccessAddCart from '../modal/ModalSuccessAddCart';
+
 
 export default function Login({ onHide, product, handleSuccessCart }) {
     let navigate = useNavigate();
@@ -61,28 +61,36 @@ export default function Login({ onHide, product, handleSuccessCart }) {
 
     const handleLogin = useMutation(async () => {
         try {
+            //Login lewat navibar
             if (state.role === 'admin') {
                 navigate('/list-transaction');
             } else {
-
+                //Login lewat detail product
                 if (product) {
-                    const data = {
-                        product_id: product.id,
-                        order_quantity: 1,
-                    };
+                    console.log("State ?",state)
+                    if (state.user.role === 'admin') {
+                        navigate('/list-transaction');
+                    }
+                    else {
+                        const data = {
+                            product_id: product.id,
+                            order_quantity: 1,
+                        };
 
-                    const config = {
-                        headers: {
-                            'Content-type': 'application/json',
-                        },
-                    };
-                    const body = JSON.stringify(data);
-                    const response = await API.post('/cart', body, config);
-                    window.dispatchEvent(new Event("badge"));
-                    handleSuccessCart()
+                        const config = {
+                            headers: {
+                                'Content-type': 'application/json',
+                            },
+                        };
+                        const body = JSON.stringify(data);
+                        const response = await API.post('/cart', body, config);
+                        //window.dispatchEvent(new Event("badge"));
+                        handleSuccessCart()
+                    }
                 } else {
                     navigate('/profile')
                 }
+                window.dispatchEvent(new Event("badge"));
 
             }
         } catch (error) {

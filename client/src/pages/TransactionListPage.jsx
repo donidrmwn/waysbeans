@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Button, Container, Dropdown, Form, Table } from 'react-bootstrap'
 import { useQuery } from 'react-query';
+import ModalDetailTransaction from '../components/modal/ModalDetailTransaction';
 import { API } from '../config/api';
 
 export default function TransactionListPage() {
@@ -9,18 +10,22 @@ export default function TransactionListPage() {
     const [filterState, setFilter] = useState(0)
     const [filterForm, setFilterForm] = useState(null)
     const [routing, setRouting] = useState("/transactions")
-    const [filterDate, setFilterDate] = useState({
-        start_date: '',
-        end_date: '',
-    });
+    const [startDate,setStartDate] = useState(null)
+    const [endDate,setEndDate] = useState(null)
 
+
+
+    const [showDetail, setShowDetail] = useState(false)
+    const handleShowDetail = () => setShowDetail(true)
+    const handleCloseDetail = () => setShowDetail(false)
+    const [transactionDetail, setTransactionDetail] = useState(null)
 
     const handleChangeDate = (e) => {
-        setFilterDate({
-            ...filterDate,
-            [e.target.name]: e.target.value,
-        })
-        console.log(filterDate)
+        // setFilterDate({
+        //     ...filterDate,
+        //     [e.target.name]: e.target.value,
+        // })
+        
     }
 
     let { data: transactions, refetch } = useQuery("transactionListCache", async () => {
@@ -30,38 +35,37 @@ export default function TransactionListPage() {
 
     const handleOnSubmit = (e) => {
         e.preventDefault();
-
         refetch()
-        console.log(routing)
+        
     }
-    
+
 
     function showForm() {
         switch (filterState) {
             case 1:
-                setRouting(`/transactions/filter/by-date?start_date=${filterDate.start_date}&end_date=${filterDate.end_date}`)
+             
                 setFilterForm(
                     <>
-                        {/* <Form className='mt-3 d-flex w-50 gap-3'>
+                        <Form className='mt-3 d-flex w-50 gap-3'>
                             <Form.Group controlId='formStartDate'>
                                 <Form.Control
-                                    onChange={handleChangeDate}
+                                    onChange={(e) => {setStartDate(e.target.value)}}
                                     name='start_date'
                                     type='date'
                                 />
                             </Form.Group>
                             <Form.Group controlId='formEndDate'>
                                 <Form.Control
-                                    onChange={handleChangeDate}
+                                    onChange={(e) => {setEndDate(e.target.value)}}
                                     name="end_date"
                                     type='date'
                                 />
-                                
+
                             </Form.Group>
                             <Button onClick={(e) => handleOnSubmit(e)}>
-                                    Submit
-                                </Button>
-                        </Form> */}
+                                Submit
+                            </Button>
+                        </Form>
                     </>
                 )
                 break;
@@ -84,20 +88,30 @@ export default function TransactionListPage() {
         }
     }
 
-    useEffect(() => {
-        refetch()
-    }, [routing])
+
+
     useEffect(() => {
         showForm();
         // if (filterState == 0) {
         //     refetch();
         // }
     }, [filterState])
+
+
+    useEffect(() =>{
+        console.log("di change tanggal: ",routing)     
+        refetch()
+    },[routing])
+
+    useEffect(() => {
+        setRouting(`/transactions/filter/by-date?start_date=${startDate}&end_date=${endDate}`)
+    
+    }, [startDate, endDate])
     return (
         <>
             <Container className='p-5'>
                 <h1>Income Transaction</h1>
-                {/* <Form>
+                <Form>
                     <Dropdown>
                         <Dropdown.Toggle variant='secondary'>
                             Filter
@@ -109,12 +123,12 @@ export default function TransactionListPage() {
                         </Dropdown.Menu>
                     </Dropdown>
                     {filterForm ? filterForm : null}
-                </Form> */}
+                </Form>
                 <Table style={{ fontSize: "14px" }} className='mt-5' striped bordered hover>
                     <thead>
                         <tr>
                             <th style={{ width: "72px" }}>No</th>
-                            <th style={{ width: "72px" }}>Id</th>
+                            <th style={{ width: "72px" }}>Order Number</th>
                             <th style={{ textAlign: "start", width: "190px" }}>Name</th>
                             <th style={{ textAlign: "start", width: "280px" }}>Address</th>
                             <th style={{ textAlign: "start", width: "100px" }}>Post Code</th>
@@ -132,9 +146,13 @@ export default function TransactionListPage() {
                                     <td>{item.address}</td>
                                     <td>{item.post_code}</td>
                                     <td>
-                                        {item.carts?.map((cart, index) => (
-                                            <p key={index} className='m-0'>{cart.products.name}</p>
-                                        ))}
+                                        {/* {item.carts?.map((cart, index) => (
+                                            <div key={index}>
+                                                <p className='m-0'>{cart.products.name}</p>
+                                                
+                                            </div>
+                                        ))} */}
+                                        <Button onClick={() => { setTransactionDetail(item); handleShowDetail() }}>Product Detail</Button>
                                     </td>
                                     <td>{item.status}</td>
                                 </tr>
@@ -145,6 +163,11 @@ export default function TransactionListPage() {
                     </tbody>
                 </Table>
             </Container>
+            <ModalDetailTransaction
+                show={showDetail}
+                onHide={handleCloseDetail}
+                transaction={transactionDetail}
+            />
         </>
     )
 }
