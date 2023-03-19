@@ -104,7 +104,7 @@ func (r *repository) FindTransactionsByProductID(userID int, productID int) ([]m
 func (r *repository) FindTransactionsByProductName(userID int, productName string) ([]models.Transaction, error) {
 	var transactions []models.Transaction
 	searchProductName := "%" + productName + "%"
-	productsId := r.db.Select("id").Where("name like ? ", searchProductName)
+	productsId := r.db.Select("id").Where("name like ? ", searchProductName).Table("products")
 	transactionsId := r.db.Select("transaction_id").Where("product_id in (?)", productsId).Table("carts")
 	err := r.db.Where("user_id = ? and id in (?)", userID, transactionsId).Preload("User").Preload("Cart", "product_id in (?)", productsId).Find(&transactions).Error
 	return transactions, err
