@@ -27,6 +27,7 @@ export default function ProfilePage() {
 
     useEffect(() => {
       refetchProfile()
+      window.dispatchEvent(new Event("badge"))
     }, [])
     
 
