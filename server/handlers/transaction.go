@@ -53,6 +53,14 @@ func convertResponseTransaction(u models.Transaction) transactiondto.Transaction
 
 func convertResponseTransactionUnfinished(u models.Transaction) transactiondto.TransactionResponse {
 	return transactiondto.TransactionResponse{
+		ID:       u.ID,
+		User:     u.User,
+		Name:     u.Name,
+		Email:    u.Email,
+		Phone:    u.Phone,
+		Address:  u.Address,
+		Status:   u.Status,
+		Cart:     u.Cart,
 		SubTotal: u.SubTotal,
 		TotalQty: u.TotalQty,
 	}
