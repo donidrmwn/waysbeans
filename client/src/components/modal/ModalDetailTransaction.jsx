@@ -5,8 +5,8 @@ export default function ModalDetailTransaction(props) {
     return (
         <>
             <Modal className="modal-xl"  show={props.show} onHide={props.onHide} centered>
-                <Modal.Body className=" m-auto p-0 w-100">
-                    <div>   
+                <Modal.Body className=" m-auto p-3 w-100">
+                    <div className="m-auto">   
                         <TransactionDetail index={0} transaction={props.transaction}/>
                     </div>
                 </Modal.Body>

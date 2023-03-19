@@ -6,7 +6,7 @@ export default function TransactionDetail({ index, transaction }) {
     return (
         <>
             {transaction.carts.length > 0 &&
-                <Card key={index} className='mb-3'>
+                <Card key={index}>
                     <Card.Body className='cardTransaction'>
                         <h3>Order Number: {transaction.id}</h3>
                         <p className='m-0'>{ConvertFormatDate(transaction.updated_at)}</p>
@@ -55,7 +55,7 @@ export default function TransactionDetail({ index, transaction }) {
                             </Col>
                         </Row>
                         <hr />
-                        <h5 className='m-0 headerColor fw-bold mt-3'>Total : {ConvertFormatRupiah(transaction.sub_total)}</h5>
+                        <h3 className='m-0 headerColor fw-bold mt-3'>Total : {ConvertFormatRupiah(transaction.sub_total)}</h3>
 
                     </Card.Body>
                 </Card>

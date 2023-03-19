@@ -11,7 +11,9 @@ export default function ProfileTransactions({ transactions }) {
             {transactions?.length !== 0 ?
                 <>
                     {transactions?.map((transaction, index) => (
-                        <TransactionDetail index={index} transaction={transaction} />
+                        <div className="mb-3">
+                            <TransactionDetail index={index} transaction={transaction} />
+                        </div>
                     ))}
                 </>
                 :

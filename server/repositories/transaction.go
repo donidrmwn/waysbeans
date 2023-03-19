@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"nis-waybeans/models"
+	"strconv"
 	"time"
 
 	"gorm.io/gorm"
@@ -21,6 +22,7 @@ type TransactionRepository interface {
 	FindTransactionsByProductID(userID int, productID int) ([]models.Transaction, error)
 	UpdateStatusTransaction(status string, orderId int) (models.Transaction, error)
 	FindTransactionsByUser(userID int) ([]models.Transaction, error)
+	FindTransactionByOrderID(orderID int) ([]models.Transaction, error)
 }
 
 func RepositoryTransaction(db *gorm.DB) *repository {
@@ -96,6 +98,13 @@ func (r *repository) FindTransactionsByProductID(userID int, productID int) ([]m
 	transactionsId := r.db.Select("transaction_id").Where("product_id = ?", productID).Table("carts")
 	err := r.db.Where("user_id = ? and id in (?)", userID, transactionsId).Preload("User").Preload("Cart", "product_id = ?", productID).Find(&transactions).Error
 
+	return transactions, err
+}
+
+func (r *repository) FindTransactionByOrderID(orderID int) ([]models.Transaction, error) {
+	var transactions []models.Transaction
+	order_id := strconv.Itoa(orderID)
+	err := r.db.Where("id LIKE ?", "%"+order_id+"%").Find(&transactions).Error
 	return transactions, err
 }
 

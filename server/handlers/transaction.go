@@ -98,6 +98,31 @@ func (h *handlerTransaction) FindTransactionsByUser(c echo.Context) error {
 	})
 }
 
+func (h *handlerTransaction) FindTransactionByOrderID(c echo.Context) error {
+	orderID := c.QueryParam("order_id")
+	order_id, _ := strconv.Atoi(orderID)
+	userLogin := c.Get("userLogin")
+	role := userLogin.(jwt.MapClaims)["role"].(string)
+	if role != "admin" {
+		return c.JSON(http.StatusBadRequest, dto.ErrorResult{
+			Code:    http.StatusBadRequest,
+			Message: "Yang admin admin aja",
+		})
+	}
+	transactions, err := h.TransactionRepository.FindTransactionByOrderID(order_id)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, dto.ErrorResult{
+			Code:    http.StatusBadRequest,
+			Message: err.Error(),
+		})
+	}
+
+	return c.JSON(http.StatusOK, dto.SuccessResult{
+		Code: http.StatusOK,
+		Data: transactions,
+	})
+}
+
 func (h *handlerTransaction) FindTransactionsByDate(c echo.Context) error {
 	startDate := c.QueryParam("start_date")
 	endDate := c.QueryParam("end_date")
@@ -441,10 +466,11 @@ func SendMail(status string, transaction models.Transaction) {
 			  </style>
 			</head>
 			<body>
+			
 				<h2>Your Payment :</h2>
 				<ul style="list=style-type:none;">
-					<li>Name : %s</li>
-					<li>Total Payment: Rp.%s</li>
+					<li>Name : %s </li>
+					<li>Total Payment: Rp.%s </li>
 					<li>Status : <b>%s</b></li>
 				</ul>
 			</body>
