@@ -15,7 +15,7 @@ type CartRepository interface {
 	UpdateCart(cart models.Cart) (models.Cart, error)
 	DeleteCart(cart models.Cart, ID int) (models.Cart, error)
 	FindCartsByTransactionID(transactionID int) ([]models.Cart, error)
-	CheckCartProductID(productID int) (models.Cart, error)
+	CheckCartProductID(productID int, transactionId int) (models.Cart, error)
 }
 
 func RepositoryCart(db *gorm.DB) *repository {
@@ -46,9 +46,9 @@ func (r *repository) GetCart(ID int) (models.Cart, error) {
 	return cart, err
 }
 
-func (r *repository) CheckCartProductID(productID int) (models.Cart, error) {
+func (r *repository) CheckCartProductID(productID int, transactionId int) (models.Cart, error) {
 	var cart models.Cart
-	err := r.db.Where("product_id = ? and checkout = ?", productID, false).First(&cart).Error
+	err := r.db.Where("product_id = ? and checkout = ? and transaction_id = ?", productID, false, transactionId).First(&cart).Error
 	return cart, err
 }
 

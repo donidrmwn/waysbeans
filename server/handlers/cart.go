@@ -165,10 +165,10 @@ func (h *handlerCart) CreateCart(c echo.Context) error {
 		})
 	}
 
-	checkCart, _ := h.CartRepository.CheckCartProductID(request.ProductID)
+	checkCart, _ := h.CartRepository.CheckCartProductID(request.ProductID, request.TransactionID)
 	fmt.Println(checkCart.ID)
 	if checkCart.ID != 0 {
-		fmt.Println("Kita update ges")
+
 		product, _ := h.ProductRepository.GetProduct(request.ProductID)
 		if product.Stock == 0 {
 			return c.JSON(http.StatusBadRequest, dto.ErrorResult{
