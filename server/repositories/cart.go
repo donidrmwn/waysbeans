@@ -36,7 +36,7 @@ func (r *repository) FindCartsByTransactionID(transactionID int) ([]models.Cart,
 
 func (r *repository) FindUnCheckedOutCarts(transactionID int) ([]models.Cart, error) {
 	var carts []models.Cart
-	err := r.db.Order("id desc").Where("checkout = ?", false).Preload("Product").Find(&carts).Error
+	err := r.db.Order("id desc").Where("checkout = ? AND transaction_id = ?", false, transactionID).Preload("Product").Find(&carts).Error
 	return carts, err
 }
 
