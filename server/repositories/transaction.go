@@ -20,6 +20,7 @@ type TransactionRepository interface {
 	FindTransactionsByDate(startData time.Time, endDate time.Time) ([]models.Transaction, error)
 	FindTransactionsByDateUser(userId int, startData time.Time, endDate time.Time) ([]models.Transaction, error)
 	FindTransactionsByProductName(userID int, productName string) ([]models.Transaction, error)
+	FindTransactionsByProductID(userID int, productId int) ([]models.Transaction, error)
 	UpdateStatusTransaction(status string, orderId int) (models.Transaction, error)
 	FindTransactionsByUser(userID int) ([]models.Transaction, error)
 	FindTransactionByOrderID(orderID int) ([]models.Transaction, error)
@@ -92,13 +93,13 @@ func (r *repository) FindTransactionsByDate(startDate time.Time, endDate time.Ti
 	return transactions, err
 }
 
-// func (r *repository) FindTransactionsByProductID(userID int, productID int) ([]models.Transaction, error) {
-// 	var transactions []models.Transaction
+func (r *repository) FindTransactionsByProductID(userID int, productID int) ([]models.Transaction, error) {
+	var transactions []models.Transaction
 
-// 	transactionsId := r.db.Select("transaction_id").Where("product_id = ?", productID).Table("carts")
-// 	err := r.db.Where("user_id = ? and id in (?)", userID, transactionsId).Preload("User").Preload("Cart", "product_id = ?", productID).Find(&transactions).Error
-// 	return transactions, err
-// }
+	transactionsId := r.db.Select("transaction_id").Where("product_id = ?", productID).Table("carts")
+	err := r.db.Where("user_id = ? and id in (?)", userID, transactionsId).Preload("User").Preload("Cart", "product_id = ?", productID).Find(&transactions).Error
+	return transactions, err
+}
 
 func (r *repository) FindTransactionsByProductName(userID int, productName string) ([]models.Transaction, error) {
 	var transactions []models.Transaction
