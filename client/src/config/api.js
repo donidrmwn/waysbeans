@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Create base URL API
 export const API = axios.create({
-  baseURL: 'https://waysbeans-server.up.railway.app/api/v1/',
+  baseURL: process.env.REACT_APP_BASE_URL,
 });
 
 // Set Authorization Token Header
