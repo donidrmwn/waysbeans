@@ -165,7 +165,7 @@ export default function TransactionListPage() {
 
                                     </td>
 
-                                    <td style={{ textAlign: "center", width: "190px" }}>{item.status}</td>
+                                    <td className='fw-bold' style={{ textAlign: "center", width: "190px" }}>{item.status}</td>
                                 </tr>
                             ))}
 

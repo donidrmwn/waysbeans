@@ -9,7 +9,7 @@ import { API } from "../config/api";
 
 
 export default function ProductListPage() {
-    
+
     let navigate = useNavigate();
     const title = "Product admin";
     document.title = "Waysbeans | " + title;
@@ -61,15 +61,15 @@ export default function ProductListPage() {
                     <>
                         <h1>List Product</h1>
                         <Button
-                                onClick={addProduct}
-                                className="btn-dark"
-                                style={{ width: "100px" }}
-                            >
-                                Add
+                            onClick={addProduct}
+                            className="btn-dark"
+                            style={{ width: "100px" }}
+                        >
+                            Add
                         </Button>
                         <Table className='mt-5' striped bordered hover>
                             <thead>
-                               
+                                <tr>
                                     <th style={{ width: "50px" }}>No</th>
                                     <th style={{ width: "180px", textAlign: "center" }}>Image</th>
                                     <th style={{ width: "280px", textAlign: "center" }}>Name</th>
@@ -77,7 +77,7 @@ export default function ProductListPage() {
                                     <th style={{ width: "120px", textAlign: "center" }}>Price</th>
                                     <th style={{ width: "240px", textAlign: "center" }}>Description</th>
                                     <th style={{ textAlign: "center" }}>Action</th>
-                               
+                                </tr>
                             </thead>
                             <tbody>
                                 {products?.map((item, index) => (
