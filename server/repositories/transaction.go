@@ -105,7 +105,7 @@ func (r *repository) FindTransactionByOrderID(orderID int) ([]models.Transaction
 	var transactions []models.Transaction
 	order_id := strconv.Itoa(orderID)
 	searchId := "%" + order_id + "%"
-	err := r.db.Where("cast(id as varchar(60)) LIKE ? ", searchId).Find(&transactions).Error
+	err := r.db.Where("cast(id as varchar(60)) LIKE ? ", searchId).Preload("User").Preload("Cart.Product").Find(&transactions).Error
 	return transactions, err
 }
 
