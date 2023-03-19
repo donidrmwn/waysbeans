@@ -114,7 +114,7 @@ export default function Shipping(props) {
         document.body.appendChild(scriptTag);
         return () => {
             document.body.removeChild(scriptTag);
-            window.dispatchEvent(new Event("badge"));
+            // window.dispatchEvent(new Event("badge"));
         };
     }, []);
 
