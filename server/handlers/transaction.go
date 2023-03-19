@@ -98,6 +98,23 @@ func (h *handlerTransaction) FindTransactionsByUser(c echo.Context) error {
 	})
 }
 
+func (h *handlerTransaction) FindTransactionByProductName(c echo.Context) error {
+	productName := c.QueryParam("product_name")
+	userLogin := c.Get("userLogin")
+	userId := userLogin.(jwt.MapClaims)["id"].(float64)
+	transactions, err := h.TransactionRepository.FindTransactionsByProductName(int(userId), productName)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, dto.ErrorResult{
+			Code:    http.StatusBadRequest,
+			Message: err.Error(),
+		})
+	}
+	return c.JSON(http.StatusOK, dto.SuccessResult{
+		Code: http.StatusOK,
+		Data: transactions,
+	})
+}
+
 func (h *handlerTransaction) FindTransactionByOrderID(c echo.Context) error {
 	orderID := c.QueryParam("order_id")
 	order_id, _ := strconv.Atoi(orderID)
