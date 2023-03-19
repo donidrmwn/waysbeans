@@ -73,7 +73,7 @@ func (r *repository) DeleteTransaction(transaction models.Transaction, ID int) (
 
 func (r *repository) GetUncheckedOutTransaction(userID int) (models.Transaction, error) {
 	var transaction models.Transaction
-	err := r.db.First(&transaction, "status = ? and user_id = ?", "Waiting For Verification", userID).Error
+	err := r.db.First(&transaction, "status = 'Waiting For Verification' and user_id = ?", userID).Error
 	return transaction, err
 }
 
