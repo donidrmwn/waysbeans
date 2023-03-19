@@ -3,7 +3,9 @@ export function ConvertFormatRupiah(number){
 }
 
 export function ConvertFormatDate(date){
-    var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-    date  = new Date();
-    return date.toLocaleString("en-US",options)
+    let options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',hour: '2-digit', minute: '2-digit', second: '2-digit' };
+    let transDate  = new Date(date);
+    let formattedDate = new Intl.DateTimeFormat('en-US', options).format(transDate)
+    console.log("Tanggal",formattedDate)
+    return formattedDate//date.toString("en-US",options)
 }

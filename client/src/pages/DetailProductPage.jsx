@@ -61,9 +61,9 @@ export default function DetailProductPage() {
     const handleCart = useMutation(async (e) => {
         try {
             e.preventDefault();
-            
+
             if (state.isLogin) {
-            
+
                 setIsLoading(true);
                 const config = {
                     headers: {
@@ -111,17 +111,24 @@ export default function DetailProductPage() {
                         <br />
                         <br />
                         <p className="d-flex justify-content-end fs-3 fw-bolder header-color">{ConvertFormatRupiah(product?.price)}</p>
-                        <Button disabled={product?.stock == 0 ? true : false} onClick={(e) => { handleCart.mutate(e) }} className="w-100 fs-4 main-button">
-                            {isLoading ?
-                                (
-                                    <LoadingSpinner />
-                                )
-                                :
-                                <>
-                                    {product?.stock <= 0 ? <>Out of stock</> : <> Add to cart </>}
-                                </>
-                            }
-                        </Button>
+
+                        {state.user.role !== "admin" ?
+                            <Button disabled={product?.stock == 0 ? true : false} onClick={(e) => { handleCart.mutate(e) }} className="w-100 fs-4 main-button">
+                                {isLoading ?
+                                    (
+                                        <LoadingSpinner />
+                                    )
+                                    :
+                                    <>
+                                        {product?.stock <= 0 ? <>Out of stock</> : <> Add to cart </>}
+                                    </>
+                                }
+                            </Button>:
+                            <Button className="w-100 fs-4 main-button" onClick={() => navigate("/update-product/"+product.id)}>
+                                Edit Product
+                            </Button>
+                    }
+
                     </Col>
                 </Row>
             </Container>

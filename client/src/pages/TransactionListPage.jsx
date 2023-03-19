@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Button, Container, Dropdown, Form, Table } from 'react-bootstrap'
 import { useQuery } from 'react-query';
 import ModalDetailTransaction from '../components/modal/ModalDetailTransaction';
+import ModalFailed from '../components/modal/ModalFailed';
 import { API } from '../config/api';
 
 export default function TransactionListPage() {
@@ -13,12 +14,22 @@ export default function TransactionListPage() {
     const [startDate, setStartDate] = useState(null)
     const [endDate, setEndDate] = useState(null)
 
+    const [showFailedAlert, setShowFailedAlert] = useState(false)
+    const handleShowFailed = () => {
+        setFailedMessage("There is no product ordered in this transaction")
+        setShowFailedAlert(true)
+    }
+    const handleCloseModalFailed = () => setShowFailedAlert(false)
+
+    const [failedMessage, setFailedMessage] = useState("Error")
 
 
     const [showDetail, setShowDetail] = useState(false)
     const handleShowDetail = () => setShowDetail(true)
     const handleCloseDetail = () => setShowDetail(false)
     const [transactionDetail, setTransactionDetail] = useState(null)
+
+
 
 
     let { data: transactions, refetch } = useQuery("transactionListCache", async () => {
@@ -30,6 +41,8 @@ export default function TransactionListPage() {
     })
 
     function showForm(filter) {
+        setStartDate(null)
+        setEndDate(null)
         switch (filter) {
             case 1:
                 setFilterForm(
@@ -63,6 +76,7 @@ export default function TransactionListPage() {
                 )
                 break;
             default:
+
                 setRouting("/transactions")
                 setFilterForm(
                     <>
@@ -79,21 +93,20 @@ export default function TransactionListPage() {
 
 
     useEffect(() => {
-        console.log("filter form",filterState)
+        console.log("filter form", filterState)
         showForm(filterState);
-        refetch()
+
     }, [filterState])
 
     useEffect(() => {
         refetch()
-        console.log("efek routing",transactions)
     }, [routing])
 
     useEffect(() => {
-        console.log("filter form date after",filterState)
-        if (filterForm == 1) {
+        if (startDate && endDate) {
             setRouting(`/transactions/filter/admin/by-date?start_date=${startDate}&end_date=${endDate}`)
         }
+
     }, [startDate, endDate])
 
     return (
@@ -117,7 +130,7 @@ export default function TransactionListPage() {
                     <thead>
                         <tr>
                             <th style={{ width: "72px" }}>No</th>
-                            <th style={{ width: "72px" }}>Order Number</th>
+                            <th style={{ width: "100px" }}>Order Number</th>
                             <th style={{ textAlign: "start", width: "190px" }}>Name</th>
                             <th style={{ textAlign: "start", width: "280px" }}>Address</th>
                             <th style={{ textAlign: "start", width: "100px" }}>Post Code</th>
@@ -134,8 +147,13 @@ export default function TransactionListPage() {
                                     <td>{item.name}</td>
                                     <td>{item.address}</td>
                                     <td>{item.post_code}</td>
-                                    <td>
-                                        <Button onClick={() => { setTransactionDetail(item); handleShowDetail() }}>Product Detail</Button>
+                                    <td className='d-flex justify-content-center'>
+                                        {item.carts.length > 0 ?
+                                            <Button variant='success' onClick={() => { setTransactionDetail(item); handleShowDetail() }}>Product Detail</Button>
+                                            :
+                                            <Button variant='danger' disabled >Empty Cart</Button>
+                                        }
+
                                     </td>
                                     <td>{item.status}</td>
                                 </tr>
@@ -152,6 +170,13 @@ export default function TransactionListPage() {
                 onHide={handleCloseDetail}
                 transaction={transactionDetail}
             />
+
+            <ModalFailed
+                show={showFailedAlert}
+                onHide={handleCloseModalFailed}
+                content={failedMessage}
+            />
+
         </>
     )
 }
