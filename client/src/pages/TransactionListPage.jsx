@@ -155,7 +155,7 @@ export default function TransactionListPage() {
                                     <td className='fw-bold fs-5' style={{ textAlign: "center", width: "90px" }}>{item.total_qty}</td>
                                     <td className='fw-bold fs-6' style={{ textAlign: "start", width: "90px" }}>{ConvertFormatRupiah(item.sub_total)}</td>
                                     <td className='d-flex justify-content-center'>
-                                        {item.carts.length > 0 ?
+                                        {item.carts?.length > 0 ?
                                             <Button variant='success' onClick={() => { setTransactionDetail(item); handleShowDetail() }}>Product Detail</Button>
                                             :
                                             <Button variant='danger' disabled >Empty Cart</Button>
