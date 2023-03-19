@@ -5,6 +5,9 @@ import { useMutation } from 'react-query';
 import { useNavigate, useParams } from 'react-router';
 import { API } from "../config/api";
 import { Col, Container, Row, Form, Image, Button } from "react-bootstrap";
+import LoadingSpinner from '../components/LoadingSpinner';
+import ModalSuccess from '../components/modal/ModalSuccess';
+import ModalFailed from '../components/modal/ModalFailed';
 
 
 
@@ -48,6 +51,18 @@ export default function UpdateProductPage() {
         price: '',
         stock: ''
     }); //Store product data
+    const [isLoading, setIsLoading] = useState(false);
+    const [showSuccessAlert, setShowSuccessAlert] = useState(false)
+    const handleShowModalSuccess = () => setShowSuccessAlert(true)
+    const handleCloseModalSuccess = () => {
+        setShowSuccessAlert(false)
+        navigate('/list-product')
+    }
+
+
+    const [showFailedAlert, setShowFailedAlert] = useState(false)
+    const handleShowModalFailed = () => setShowFailedAlert(true)
+    const handleCloseModalFailed = () => setShowFailedAlert(false)
 
     async function getDataUpdate() {
         const responseProduct = await API.get('/product/' + id)
@@ -84,7 +99,7 @@ export default function UpdateProductPage() {
     const handleSubmit = useMutation(async (e) => {
         try {
             e.preventDefault();
-
+            setIsLoading(true);
             //Configuration API
             const config = {
                 headers: {
@@ -94,7 +109,7 @@ export default function UpdateProductPage() {
 
             //store data with formdata as object
             const formData = new FormData();
-            if(form.image){
+            if (form.image) {
                 formData.set('image', form?.image[0]);
             }
             formData.set('name', form.name);
@@ -108,6 +123,7 @@ export default function UpdateProductPage() {
                 config
             );
             console.log(response.data);
+            setIsLoading(false);
             navigate('/list-product');
 
         } catch (error) {
@@ -120,7 +136,7 @@ export default function UpdateProductPage() {
                 <Row className="mt-1">
                     <Col md="6" className="me-5 d-grid">
                         <h3 className="headerColor fw-bold mb-2">
-                            Update Product                        
+                            Update Product
                         </h3>
                         <Form onSubmit={(e) => handleSubmit.mutate(e)}>
                             <Form.Group className="mb-4 w-100 fs-1" controlId="formName">
@@ -183,8 +199,14 @@ export default function UpdateProductPage() {
                             </Form.Group>
 
 
-                            <Button className="main-button w-50 m-auto justify-content-center d-flex" type="submit">
-                                Update Product                            
+                            <Button className="main-button w-50 m-auto justify-content-center d-flex" type="submit" disabled={isLoading}>
+                                {isLoading ?
+                                    (
+                                        <LoadingSpinner />
+                                    )
+                                    :
+                                    <>Update Product</>
+                                }
                             </Button>
                         </Form>
                     </Col>
@@ -195,6 +217,17 @@ export default function UpdateProductPage() {
                     </Col>
                 </Row>
             </Container>
+            <ModalSuccess
+                show={showSuccessAlert}
+                onHide={handleCloseModalSuccess}
+                content={"Success add new product"}
+            />
+
+            <ModalFailed
+                show={showFailedAlert}
+                onHide={handleCloseModalFailed}
+                content={"Failed add new product"}
+            />
         </>
     )
 }

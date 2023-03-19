@@ -35,17 +35,7 @@ function App() {
     window.dispatchEvent(new Event("badge"));
   }, [isLoading])
 
-  useEffect(() => {
-    if (localStorage.token) {
 
-      setAuthToken(localStorage.token);
-      checkUser();
-      window.dispatchEvent(new Event("badge"));
-    } else {
-      setIsLoading(false);
-    }
-
-  }, []);
 
 
 
@@ -69,6 +59,17 @@ function App() {
     }
   };
 
+
+  useEffect(() => {
+    if (localStorage.token) {
+      setAuthToken(localStorage.token);
+      checkUser();
+      window.dispatchEvent(new Event("badge"));
+    } else {
+      setIsLoading(false);
+    }
+
+  }, []);
   return (
     <>
 
