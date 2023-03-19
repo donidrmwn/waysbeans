@@ -80,17 +80,17 @@ export default function Shipping(props) {
                 onSuccess: function (result) {
                     console.log(result);
                     window.dispatchEvent(new Event("badge"));
-                   // props.handleSuccess();
+                    props.handleSuccess();
                 },
                 onPending: function (result) {
                     console.log(result);
                     window.dispatchEvent(new Event("badge"));
-                    //props.handleSuccess();
+                    props.handleSuccess();
                 },
                 onError: function (result) {
                     console.log(result);
                     window.dispatchEvent(new Event("badge"));
-                   // props.handleSuccess();
+                    props.handleSuccess();
                 },
                 onClose: function () {
                     alert("you closed the popup without finishing the payment");

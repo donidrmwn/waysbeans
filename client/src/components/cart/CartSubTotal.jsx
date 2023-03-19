@@ -15,13 +15,14 @@ export default function CartSubTotal({ transaction }) {
 
     const handleCloseSuccess = () => {
         setShowsuccess(false)
+        window.dispatchEvent(new Event("badge"));
         navigate('/profile');
-
     }
 
     const popSuccess = () => {
         setShowsuccess(true)
         setShowShipping(false)
+       
     }
 
 
