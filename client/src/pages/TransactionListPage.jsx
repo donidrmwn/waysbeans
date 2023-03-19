@@ -107,10 +107,12 @@ export default function TransactionListPage() {
     }, [startDate, endDate])
 
     useEffect(() => {
-        if(orderID){
-            setRouting(`/transactions/filter/id?order_id=${orderID}`) 
+        if (orderID) {
+            setRouting(`/transactions/filter/id?order_id=${orderID}`)
+        } else {
+            setRouting("/transactions")
         }
-    },[orderID])
+    }, [orderID])
     return (
         <>
             <Container className='p-5'>
