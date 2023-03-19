@@ -17,7 +17,7 @@ const style = {
 
 
 export default function Shipping(props) {
-   
+    const navigate = useNavigate();
     const [form, setForm] = useState({
         name: '',
         email: '',
@@ -81,16 +81,19 @@ export default function Shipping(props) {
                     console.log(result);
                     window.dispatchEvent(new Event("badge"));
                     props.handleSuccess();
+                    navigate('/profile');
                 },
                 onPending: function (result) {
                     console.log(result);
                     window.dispatchEvent(new Event("badge"));
                     props.handleSuccess();
+                    navigate('/profile');
                 },
                 onError: function (result) {
                     console.log(result);
                     window.dispatchEvent(new Event("badge"));
                     props.handleSuccess();
+                    navigate('/profile');
                 },
                 onClose: function () {
                     alert("you closed the popup without finishing the payment");
@@ -114,7 +117,6 @@ export default function Shipping(props) {
         document.body.appendChild(scriptTag);
         return () => {
             document.body.removeChild(scriptTag);
-            // window.dispatchEvent(new Event("badge"));
         };
     }, []);
 
