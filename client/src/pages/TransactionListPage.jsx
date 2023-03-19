@@ -10,8 +10,8 @@ export default function TransactionListPage() {
     const [filterState, setFilter] = useState(0)
     const [filterForm, setFilterForm] = useState(null)
     const [routing, setRouting] = useState("/transactions")
-    const [startDate,setStartDate] = useState(null)
-    const [endDate,setEndDate] = useState(null)
+    const [startDate, setStartDate] = useState(null)
+    const [endDate, setEndDate] = useState(null)
 
 
 
@@ -20,57 +20,42 @@ export default function TransactionListPage() {
     const handleCloseDetail = () => setShowDetail(false)
     const [transactionDetail, setTransactionDetail] = useState(null)
 
-    const handleChangeDate = (e) => {
-        // setFilterDate({
-        //     ...filterDate,
-        //     [e.target.name]: e.target.value,
-        // })
-        
-    }
 
     let { data: transactions, refetch } = useQuery("transactionListCache", async () => {
+        console.log("Routing", routing)
         const response = await API.get(routing);
+
+        console.log(response)
         return response.data.data
     })
 
-    const handleOnSubmit = (e) => {
-        e.preventDefault();
-        refetch()
-        
-    }
-
-
-    function showForm() {
-        switch (filterState) {
+    function showForm(filter) {
+        switch (filter) {
             case 1:
-             
                 setFilterForm(
                     <>
                         <Form className='mt-3 d-flex w-50 gap-3'>
                             <Form.Group controlId='formStartDate'>
                                 <Form.Control
-                                    onChange={(e) => {setStartDate(e.target.value)}}
+                                    onChange={(e) => { setStartDate(e.target.value) }}
                                     name='start_date'
                                     type='date'
                                 />
                             </Form.Group>
                             <Form.Group controlId='formEndDate'>
                                 <Form.Control
-                                    onChange={(e) => {setEndDate(e.target.value)}}
+                                    onChange={(e) => { setEndDate(e.target.value) }}
                                     name="end_date"
                                     type='date'
                                 />
 
                             </Form.Group>
-                            <Button onClick={(e) => handleOnSubmit(e)}>
-                                Submit
-                            </Button>
                         </Form>
                     </>
                 )
                 break;
             case 2:
-                setRouting("/transactions")
+                //setRouting("/transactions")
                 setFilterForm(
                     <>
                         <p>Ini order number</p>
@@ -83,30 +68,34 @@ export default function TransactionListPage() {
                     <>
                     </>
                 )
-
                 break;
         }
     }
 
 
+    useEffect(() => {
+        setRouting("/transactions")
+    }, [])
+
 
     useEffect(() => {
-        showForm();
-        // if (filterState == 0) {
-        //     refetch();
-        // }
+        console.log("filter form",filterState)
+        showForm(filterState);
+        refetch()
     }, [filterState])
 
-
-    useEffect(() =>{
-        console.log("di change tanggal: ",routing)     
+    useEffect(() => {
         refetch()
-    },[routing])
+        console.log("efek routing",transactions)
+    }, [routing])
 
     useEffect(() => {
-        setRouting(`/transactions/filter/by-date?start_date=${startDate}&end_date=${endDate}`)
-    
+        console.log("filter form date after",filterState)
+        if (filterForm == 1) {
+            setRouting(`/transactions/filter/admin/by-date?start_date=${startDate}&end_date=${endDate}`)
+        }
     }, [startDate, endDate])
+
     return (
         <>
             <Container className='p-5'>
@@ -146,12 +135,6 @@ export default function TransactionListPage() {
                                     <td>{item.address}</td>
                                     <td>{item.post_code}</td>
                                     <td>
-                                        {/* {item.carts?.map((cart, index) => (
-                                            <div key={index}>
-                                                <p className='m-0'>{cart.products.name}</p>
-                                                
-                                            </div>
-                                        ))} */}
                                         <Button onClick={() => { setTransactionDetail(item); handleShowDetail() }}>Product Detail</Button>
                                     </td>
                                     <td>{item.status}</td>
@@ -163,6 +146,7 @@ export default function TransactionListPage() {
                     </tbody>
                 </Table>
             </Container>
+
             <ModalDetailTransaction
                 show={showDetail}
                 onHide={handleCloseDetail}
