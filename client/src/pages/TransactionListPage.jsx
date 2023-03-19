@@ -4,6 +4,7 @@ import { useQuery } from 'react-query';
 import ModalDetailTransaction from '../components/modal/ModalDetailTransaction';
 import ModalFailed from '../components/modal/ModalFailed';
 import { API } from '../config/api';
+import { ConvertFormatRupiah } from '../utils';
 
 export default function TransactionListPage() {
     const title = "Transactions";
@@ -13,22 +14,12 @@ export default function TransactionListPage() {
     const [routing, setRouting] = useState("/transactions")
     const [startDate, setStartDate] = useState(null)
     const [endDate, setEndDate] = useState(null)
-
-    const [showFailedAlert, setShowFailedAlert] = useState(false)
-    const handleShowFailed = () => {
-        setFailedMessage("There is no product ordered in this transaction")
-        setShowFailedAlert(true)
-    }
-    const handleCloseModalFailed = () => setShowFailedAlert(false)
-
-    const [failedMessage, setFailedMessage] = useState("Error")
-
+    const [orderID, setOrderID] = useState(null)
 
     const [showDetail, setShowDetail] = useState(false)
     const handleShowDetail = () => setShowDetail(true)
     const handleCloseDetail = () => setShowDetail(false)
     const [transactionDetail, setTransactionDetail] = useState(null)
-
 
 
 
@@ -71,12 +62,20 @@ export default function TransactionListPage() {
                 //setRouting("/transactions")
                 setFilterForm(
                     <>
-                        <p>Ini order number</p>
+                        <Form className='mt-3 d-flex w-50 gap-3'>
+                            <Form.Group controlId='formOrderId'>
+                                <Form.Control
+                                    onChange={(e) => { setOrderID(e.target.value) }}
+                                    name='order_id'
+                                    type='text'
+                                    placeholder='Order Number'
+                                />
+                            </Form.Group>
+                        </Form>
                     </>
                 )
                 break;
             default:
-
                 setRouting("/transactions")
                 setFilterForm(
                     <>
@@ -85,7 +84,6 @@ export default function TransactionListPage() {
                 break;
         }
     }
-
 
     useEffect(() => {
         setRouting("/transactions")
@@ -109,6 +107,11 @@ export default function TransactionListPage() {
 
     }, [startDate, endDate])
 
+    useEffect(() => {
+        if(orderID){
+            setRouting(`/transactions/filter/admin/by-date?start_date=${startDate}&end_date=${endDate}`) 
+        }
+    })
     return (
         <>
             <Container className='p-5'>
@@ -126,20 +129,23 @@ export default function TransactionListPage() {
                     </Dropdown>
                     {filterForm ? filterForm : null}
                 </Form>
-                <Table style={{ fontSize: "14px" }} className='mt-5' striped bordered hover>
+                <Table style={{ fontSize: "14px" }} className='mt-4' striped bordered hover>
                     <thead>
                         <tr>
-                            <th style={{ width: "72px" }}>No</th>
-                            <th style={{ width: "100px" }}>Order Number</th>
+                            <th style={{ width: "50px" }}>No</th>
+                            <th style={{ width: "130px" }}>Order Number</th>
                             <th style={{ textAlign: "start", width: "190px" }}>Name</th>
                             <th style={{ textAlign: "start", width: "280px" }}>Address</th>
                             <th style={{ textAlign: "start", width: "100px" }}>Post Code</th>
-                            <th style={{ textAlign: "start", width: "150px" }}>Products</th>
-                            <th style={{ textAlign: "start", width: "190px" }}>Status</th>
+                            <th style={{ textAlign: "start", width: "90px" }}>Total Qty</th>
+                            <th style={{ textAlign: "start", width: "90px" }}>Total Amount</th>
+                            <th style={{ textAlign: "start", width: "160px" }}>Products</th>
+                            <th style={{ textAlign: "center", width: "190px" }}>Status</th>
                         </tr>
                     </thead>
                     <tbody>
                         <>
+
                             {transactions?.map((item, index) => (
                                 <tr key={index}>
                                     <td>{index + 1}</td>
@@ -147,6 +153,8 @@ export default function TransactionListPage() {
                                     <td>{item.name}</td>
                                     <td>{item.address}</td>
                                     <td>{item.post_code}</td>
+                                    <td className='fw-bold fs-5' style={{ textAlign: "center", width: "90px" }}>{item.total_qty}</td>
+                                    <td className='fw-bold fs-6' style={{ textAlign: "start", width: "90px" }}>{ConvertFormatRupiah(item.sub_total)}</td>
                                     <td className='d-flex justify-content-center'>
                                         {item.carts.length > 0 ?
                                             <Button variant='success' onClick={() => { setTransactionDetail(item); handleShowDetail() }}>Product Detail</Button>
@@ -155,7 +163,8 @@ export default function TransactionListPage() {
                                         }
 
                                     </td>
-                                    <td>{item.status}</td>
+
+                                    <td style={{ textAlign: "center", width: "190px" }}>{item.status}</td>
                                 </tr>
                             ))}
 
@@ -171,11 +180,6 @@ export default function TransactionListPage() {
                 transaction={transactionDetail}
             />
 
-            <ModalFailed
-                show={showFailedAlert}
-                onHide={handleCloseModalFailed}
-                content={failedMessage}
-            />
 
         </>
     )
