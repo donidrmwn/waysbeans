@@ -22,8 +22,8 @@ func TransactionRoutes(e *echo.Group) {
 
 	e.GET("/transactions", h.FindTransactions)
 	e.GET("/transactions/user", middleware.Auth(h.FindTransactionsByUser))
-	e.GET("/transactions/filter/by-date", middleware.Auth(h.FindTransactionsByDate))
-	e.GET("/transactions/filter/by-date", middleware.Auth(h.FindTransactionsByDateUser))
+	e.GET("/transactions/filter/admin/by-date", middleware.Auth(h.FindTransactionsByDate))
+	e.GET("/transactions/filter/user/by-date", middleware.Auth(h.FindTransactionsByDateUser))
 	e.GET("/transactions/filter/by-product", middleware.Auth(h.FindTransactionsByProductID))
 	e.GET("/transactions/unfinished", middleware.Auth(h.GetUncheckedOutTransaction))
 	e.GET("/transaction/:id", h.GetTransaction)
