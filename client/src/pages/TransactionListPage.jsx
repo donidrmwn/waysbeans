@@ -59,7 +59,6 @@ export default function TransactionListPage() {
                 )
                 break;
             case 2:
-                //setRouting("/transactions")
                 setFilterForm(
                     <>
                         <Form className='mt-3 d-flex w-50 gap-3'>
@@ -109,7 +108,7 @@ export default function TransactionListPage() {
 
     useEffect(() => {
         if(orderID){
-            setRouting(`/transactions/filter/id?order_id=1${orderID}`) 
+            setRouting(`/transactions/filter/id?order_id=${orderID}`) 
         }
     },[orderID])
     return (
