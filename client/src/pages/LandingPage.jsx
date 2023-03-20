@@ -45,13 +45,13 @@ export default function LandingPage() {
                         </Col>
                         <Col md="5" className="d-flex align-items-end">
                             <div className="d-grid p-0 pb-4">
-                                <img className='w-100 mb-3' src="/vector.png" alt="" />
-                                <img className='w-100 mb-3' src="/vector.png" alt="" />
-                                <img className='w-100' src="/vector.png" alt="" />
+                                <img className='w-100 mb-3' src="/Vector.png" alt="" />
+                                <img className='w-100 mb-3' src="/Vector.png" alt="" />
+                                <img className='w-100' src="/Vector.png" alt="" />
                             </div>
                         </Col>
                     </Row>
-                    <img style={style.rectangle3} src="Rectangle 3.png" alt="" />
+                    <img style={style.rectangle3} src="/Rectangle 3.png" alt="" />
 
                 </Container>
                 <Container className="mt-3 p-0 w-100">
