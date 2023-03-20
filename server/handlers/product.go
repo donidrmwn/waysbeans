@@ -184,6 +184,7 @@ func (h *handlerProduct) UpdateProduct(c echo.Context) error {
 	stock, _ := strconv.Atoi(c.FormValue("stock"))
 
 	cld, _ := cloudinary.NewFromParams(CLOUD_NAME, API_KEY, API_SECRET)
+
 	resp, err := cld.Upload.Upload(ctx, dataFile, uploader.UploadParams{Folder: "waysbeans"})
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, dto.ErrorResult{
