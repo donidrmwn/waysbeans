@@ -81,22 +81,19 @@ export default function Shipping(props) {
                     console.log(result);
                     window.dispatchEvent(new Event("badge"));
                     props.handleSuccess();
-                    navigate('https://www.youtube.com/watch?v=dQw4w9WgXcQ')
-                    // navigate('/profile');
+                    navigate('/profile');
                 },
                 onPending: function (result) {
                     console.log(result);
                     window.dispatchEvent(new Event("badge"));
                     props.handleSuccess();
-                    navigate('https://www.youtube.com/watch?v=dQw4w9WgXcQ')
-                    // navigate('/profile');
+                    navigate('/profile');
                 },
                 onError: function (result) {
                     console.log(result);
                     window.dispatchEvent(new Event("badge"));
                     props.handleSuccess();
-                    navigate('https://www.youtube.com/watch?v=dQw4w9WgXcQ')
-                    // navigate('/profile');
+                    navigate('/profile');
                 },
                 onClose: function () {
                     alert("you closed the popup without finishing the payment");
