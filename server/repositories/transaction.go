@@ -1,7 +1,6 @@
 package repositories
 
 import (
-	"fmt"
 	"nis-waybeans/models"
 	"strconv"
 	"time"
@@ -107,11 +106,9 @@ func (r *repository) FindTransactionsByProductName(userID int, productName strin
 	searchProductName := "%" + productName + "%"
 
 	productsId := r.db.Select("id").Where("name ilike ? ", searchProductName).Table("products")
-	fmt.Println(productName)
-	fmt.Println(productsId)
+
 	transactionsId := r.db.Select("transaction_id").Where("product_id in (?)", productsId).Table("carts")
-	fmt.Println(transactionsId)
-	err := r.db.Where("user_id = ? and id in (?)", userID, transactionsId).Preload("User").Preload("Cart", "product_id in (?)", productsId).Find(&transactions).Error
+	err := r.db.Where("user_id = ? and id in (?)", userID, transactionsId).Preload("User").Preload("Cart.Product").Find(&transactions).Error
 	return transactions, err
 }
 
