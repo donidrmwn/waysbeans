@@ -196,7 +196,7 @@ func (h *handlerProduct) UpdateProduct(c echo.Context) error {
 		Name:        c.FormValue("name"),
 		Description: c.FormValue("description"),
 		Price:       price,
-		Image:       resp.SecureURL,
+		Image:       dataFile,
 		Stock:       stock,
 	}
 
@@ -226,7 +226,7 @@ func (h *handlerProduct) UpdateProduct(c echo.Context) error {
 		product.Stock = request.Stock
 	}
 	if request.Image != "" {
-		product.Image = request.Image
+		product.Image = resp.SecureURL
 	}
 
 	data, err := h.ProductRepository.UpdateProduct(product)

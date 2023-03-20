@@ -56,7 +56,8 @@ export default function UpdateProductPage() {
     const handleShowModalSuccess = () => setShowSuccessAlert(true)
     const handleCloseModalSuccess = () => {
         setShowSuccessAlert(false)
-        navigate('/list-product')
+        navigate('/list-product');
+
     }
 
 
@@ -124,10 +125,11 @@ export default function UpdateProductPage() {
             );
             console.log(response.data);
             setIsLoading(false);
-            navigate('/list-product');
+            handleShowModalSuccess();
 
         } catch (error) {
-            console.log(error)
+            setIsLoading(false)
+            handleShowModalFailed();
         }
     })
     return (
@@ -220,13 +222,13 @@ export default function UpdateProductPage() {
             <ModalSuccess
                 show={showSuccessAlert}
                 onHide={handleCloseModalSuccess}
-                content={"Success add new product"}
+                content={"Success update product"}
             />
 
             <ModalFailed
                 show={showFailedAlert}
                 onHide={handleCloseModalFailed}
-                content={"Failed add new product"}
+                content={"Failed Update product"}
             />
         </>
     )
