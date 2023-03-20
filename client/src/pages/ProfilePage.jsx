@@ -71,6 +71,7 @@ export default function ProfilePage() {
 
                         <Container>
                             <h4 className='headerColor fw-bold mb-4'>My Transaction</h4>
+                            
                             <ProfileTransactions transactions={transactions} />
                         </Container>
                     </Col>
