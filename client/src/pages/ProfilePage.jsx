@@ -38,6 +38,7 @@ export default function ProfilePage() {
     useEffect(() => {
         refetchProfile()
         refetchTransaction()
+        console.log("open profile")
         window.dispatchEvent(new Event("badge"))
     }, [])
 
