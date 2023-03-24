@@ -234,17 +234,26 @@ func (h *handlerTransaction) GetTransaction(c echo.Context) error {
 func (h *handlerTransaction) GetUncheckedOutTransaction(c echo.Context) error {
 	userLogin := c.Get("userLogin")
 	userID := userLogin.(jwt.MapClaims)["id"].(float64)
-	transaction, err := h.TransactionRepository.GetUncheckedOutTransactionByUserID(int(userID))
-	if err != nil {
-		return c.JSON(http.StatusBadRequest, dto.ErrorResult{
-			Code:    http.StatusBadRequest,
-			Message: err.Error(),
+	transaction, _ := h.TransactionRepository.GetUncheckedOutTransactionByUserID(int(userID))
+	// if err != nil {
+	// 	return c.JSON(http.StatusOK, dto.SuccessResult{
+	// 		Code:    http.StatusBadRequest,
+	// 		Data: convertResponseTransactionUnfinished(transaction),
+	// 	})
+	// }
+	if transaction.ID != 0 {
+		return c.JSON(http.StatusOK, dto.SuccessResult{
+			Code: http.StatusOK,
+			Data: convertResponseTransactionUnfinished(transaction),
+		})
+	} else {
+		transaction.SubTotal = 0
+		return c.JSON(http.StatusOK, dto.SuccessResult{
+			Code: http.StatusOK,
+			Data: transaction,
 		})
 	}
-	return c.JSON(http.StatusOK, dto.SuccessResult{
-		Code: http.StatusOK,
-		Data: convertResponseTransactionUnfinished(transaction),
-	})
+
 }
 
 func (h *handlerTransaction) CreateTransaction(c echo.Context) error {

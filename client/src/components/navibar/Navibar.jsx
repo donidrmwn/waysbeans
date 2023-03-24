@@ -16,7 +16,7 @@ export default function Navibar() {
     const [state] = useContext(UserContext);
     const [showLogin, setShowLogin] = useState(false);
     const [showRegister, setShowRegister] = useState(false);
-
+    const [badgQty,setBadgeQty] = useState(0)
 
     const handleCloseLogin = () => setShowLogin(false)
     const handleShowLogin = () => setShowLogin(true)
@@ -36,9 +36,13 @@ export default function Navibar() {
 
 
     let { data: transaction, refetch } = useQuery('transactionCache', async () => {
+        try{
         if (localStorage.token && state.user.role === "customer") {
             const response = await API.get('/transactions/unfinished');
+            setBadgeQty(response.data.data.total_qty)
             return response.data.data
+        }}catch(error){
+            setBadgeQty(0)
         }
     });
 
@@ -93,7 +97,7 @@ export default function Navibar() {
                                         <>
                                             {/* {carts?.length > 0 && */}
                                             <DropDownUser
-                                                badgeQty={transaction ? transaction?.total_qty : null}
+                                                badgeQty={badgQty}
                                             />
                                             {/* } */}
                                         </>

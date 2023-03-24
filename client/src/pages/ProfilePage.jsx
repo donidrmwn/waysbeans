@@ -18,12 +18,13 @@ export default function ProfilePage() {
     const [productName, setProductName] = useState(null)
     const [endPoint, setEndPoint] = useState("/transactions/user")
     const [state] = useContext(UserContext);
-    let { refetch: refetchTransaction } = useQuery('transactionCache', async () => {
-        if (localStorage.token && state.user.role === "customer") {
-            const response = await API.get('/transactions/unfinished');
-            return response.data.data
-        }
-    });
+
+    // let { refetch: refetchTransaction } = useQuery('transactionCache', async () => {
+    //     if (localStorage.token && state.user.role === "customer") {
+    //         const response = await API.get('/transactions/unfinished');
+    //         return response.data.data
+    //     }
+    // });
 
 
     let { data: transactions, refetch } = useQuery("transactionListCache", async () => {
@@ -38,7 +39,7 @@ export default function ProfilePage() {
 
     useEffect(() => {
         refetchProfile()
-        refetchTransaction()
+      
         console.log("open profile")
         window.dispatchEvent(new Event("badge"))
     }, [])
