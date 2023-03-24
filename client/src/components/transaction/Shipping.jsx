@@ -91,26 +91,26 @@ export default function Shipping(props) {
                 onSuccess: function (result) {
                     console.log(result);
 
-                    refetch()
-                    props.handleSuccess();
-                    window.dispatchEvent(new Event("badge"));
-                    navigate('/profile');
+                    // refetch()
+                    // props.handleSuccess();
+                    // window.dispatchEvent(new Event("badge"));
+                    // navigate('/profile');
                 },
                 onPending: function (result) {
                     console.log(result);
 
-                    refetch()
-                    props.handleSuccess();
-                    window.dispatchEvent(new Event("badge"));
-                    navigate('/profile');
+                    // refetch()
+                    // props.handleSuccess();
+                    // window.dispatchEvent(new Event("badge"));
+                    // navigate('/profile');
                 },
                 onError: function (result) {
-                    console.log(result);
+                     console.log(result);
 
-                    refetch()
-                    props.handleSuccess();
-                    window.dispatchEvent(new Event("badge"));
-                    navigate('/profile');
+                    // refetch()
+                    // props.handleSuccess();
+                    // window.dispatchEvent(new Event("badge"));
+                    // navigate('/profile');
                 },
                 onClose: function () {
                     alert("you closed the popup without finishing the payment");
