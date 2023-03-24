@@ -29,6 +29,8 @@ export default function Shipping(props) {
     })
 
     const [state] = useContext(UserContext);
+
+    
     let { refetch } = useQuery('transactionCache', async () => {
         if (localStorage.token && state.user.role === "customer") {
             const response = await API.get('/transactions/unfinished');

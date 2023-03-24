@@ -37,6 +37,11 @@ export default function DropDownUser(props) {
         })
         navigate("/")
     }
+    let { data: profile } = useQuery("profileCache", async () => {
+        const response = await API.get("/profile/user");
+        return response.data.data;
+    })
+
     return (
         <>
             <Col>
@@ -55,7 +60,7 @@ export default function DropDownUser(props) {
 
                     <Col md="6" className="p-0 m-auto">
                         <NavDropdown
-                            title={<Image style={style.roundedImage} className="m-auto " src={`${""}`} alt="user pic" />} id="basic-nav-dropdown">
+                            title={<Image style={style.roundedImage} className="m-auto " src={`${profile?.profile_picture}`} alt="user pic" />} id="basic-nav-dropdown">
                             <div style={style.dropDownContainer}>
                                 <NavDropdown.Item
                                     as={Link}

@@ -34,6 +34,7 @@ export default function Navibar() {
         setShowRegister(true);
     };
 
+
     let { data: transaction, refetch } = useQuery('transactionCache', async () => {
         if (localStorage.token && state.user.role === "customer") {
             const response = await API.get('/transactions/unfinished');
@@ -41,11 +42,17 @@ export default function Navibar() {
         }
     });
 
+    let { refetch: refetchProfile } = useQuery("profileCache", async () => {
+        const response = await API.get("/profile/user");
+        return response.data.data;
+    })
+
 
     useEffect(() => {
         //refetch();
         window.addEventListener('badge', () => {
             refetch()
+            refetchProfile()
         })
     }, [])
 
