@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Button, Container, Form } from "react-bootstrap";
-import { useMutation } from "react-query";
+import { useMutation, useQuery } from "react-query";
 import { useNavigate } from "react-router";
 import { API } from "../../config/api";
+import { UserContext } from "../../context/userContext";
 
 
 const style = {
@@ -15,12 +16,7 @@ const style = {
     },
 }
 
-let { refetch } = useQuery('transactionCache', async () => {
-    if (localStorage.token && state.user.role === "customer") {
-        const response = await API.get('/transactions/unfinished');
-        return response.data.data
-    }
-});
+
 
 export default function Shipping(props) {
     const navigate = useNavigate();
@@ -32,6 +28,13 @@ export default function Shipping(props) {
         address: ''
     })
 
+    const [state] = useContext(UserContext);
+    let { refetch } = useQuery('transactionCache', async () => {
+        if (localStorage.token && state.user.role === "customer") {
+            const response = await API.get('/transactions/unfinished');
+            return response.data.data
+        }
+    });
 
     async function getDataUpdate() {
         const responseProduct = await API.get('/profile/user')

@@ -1,10 +1,11 @@
 
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Container, Card, Row, Col, Button, Form } from 'react-bootstrap'
 import { useQuery } from 'react-query';
 import ModalRegisterProfile from '../components/modal/ModalRegisterProfile';
 import ProfileTransactions from '../components/transaction/ProfileTransactions';
 import { API } from '../config/api';
+import { UserContext } from '../context/userContext';
 
 export default function ProfilePage() {
     const title = "Profile";
@@ -16,7 +17,7 @@ export default function ProfilePage() {
     const handleCloseModalProfile = () => setShowModalProfile(false)
     const [productName, setProductName] = useState(null)
     const [endPoint, setEndPoint] = useState("/transactions/user")
-
+    const [state] = useContext(UserContext);
     let { refetch: refetchTransaction } = useQuery('transactionCache', async () => {
         if (localStorage.token && state.user.role === "customer") {
             const response = await API.get('/transactions/unfinished');
