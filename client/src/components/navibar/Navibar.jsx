@@ -93,7 +93,7 @@ export default function Navibar() {
                                         <>
                                             {/* {carts?.length > 0 && */}
                                             <DropDownUser
-                                                badgeQty={transaction?.total_qty ? transaction?.total_qty : null}
+                                                badgeQty={transaction ? transaction?.total_qty : null}
                                             />
                                             {/* } */}
                                         </>
