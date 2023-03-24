@@ -65,7 +65,7 @@ export default function Shipping(props) {
     const handleSubmit = useMutation(async (e) => {
         try {
             e.preventDefault();
-            
+            props.onHide()
             const config = {
                 headers: {
                     'Content-type': 'multipart/form-data'
@@ -88,7 +88,7 @@ export default function Shipping(props) {
             
             console.log("success shipping: ", response.data.data.token);
             const token = response.data.data.token;
-            props.onHide()
+          
             window.snap.pay(token, {
                 onSuccess: function (result) {
                     console.log(result);
