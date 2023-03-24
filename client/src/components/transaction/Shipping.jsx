@@ -94,7 +94,7 @@ export default function Shipping(props) {
                     // refetch()
                     // props.handleSuccess();
                     // window.dispatchEvent(new Event("badge"));
-                    // navigate('/profile');
+                    navigate('/profile');
                 },
                 onPending: function (result) {
                     console.log(result);
@@ -102,7 +102,7 @@ export default function Shipping(props) {
                     // refetch()
                     // props.handleSuccess();
                     // window.dispatchEvent(new Event("badge"));
-                    // navigate('/profile');
+                    navigate('/profile');
                 },
                 onError: function (result) {
                      console.log(result);
@@ -110,7 +110,7 @@ export default function Shipping(props) {
                     // refetch()
                     // props.handleSuccess();
                     // window.dispatchEvent(new Event("badge"));
-                    // navigate('/profile');
+                     navigate('/profile');
                 },
                 onClose: function () {
                     alert("you closed the popup without finishing the payment");
