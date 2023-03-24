@@ -30,7 +30,7 @@ export default function Shipping(props) {
 
     const [state] = useContext(UserContext);
 
-    
+
     let { refetch } = useQuery('transactionCache', async () => {
         if (localStorage.token && state.user.role === "customer") {
             const response = await API.get('/transactions/unfinished');
@@ -65,7 +65,7 @@ export default function Shipping(props) {
     const handleSubmit = useMutation(async (e) => {
         try {
             e.preventDefault();
-
+            props.onHide()
             const config = {
                 headers: {
                     'Content-type': 'multipart/form-data'
@@ -85,32 +85,36 @@ export default function Shipping(props) {
                 formData,
                 config
             );
+            
             console.log("success shipping: ", response.data.data.token);
             const token = response.data.data.token;
             window.snap.pay(token, {
                 onSuccess: function (result) {
                     console.log(result);
-
+                    
                     // refetch()
                     // props.handleSuccess();
                     // window.dispatchEvent(new Event("badge"));
                     navigate('/profile');
+                    props.handleSuccess();
                 },
                 onPending: function (result) {
                     console.log(result);
-
+                  
                     // refetch()
                     // props.handleSuccess();
                     // window.dispatchEvent(new Event("badge"));
                     navigate('/profile');
+                    props.handleSuccess();
                 },
                 onError: function (result) {
-                     console.log(result);
-
+                    console.log(result);
+                   
                     // refetch()
                     // props.handleSuccess();
                     // window.dispatchEvent(new Event("badge"));
-                     navigate('/profile');
+                    navigate('/profile');
+                    props.handleSuccess();
                 },
                 onClose: function () {
                     alert("you closed the popup without finishing the payment");
