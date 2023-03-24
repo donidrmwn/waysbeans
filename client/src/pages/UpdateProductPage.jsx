@@ -57,7 +57,6 @@ export default function UpdateProductPage() {
     const handleCloseModalSuccess = () => {
         setShowSuccessAlert(false)
         navigate('/list-product');
-
     }
 
 

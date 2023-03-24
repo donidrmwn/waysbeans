@@ -15,6 +15,12 @@ const style = {
     },
 }
 
+let {  refetch } = useQuery('transactionCache', async () => {
+    if (localStorage.token && state.user.role === "customer") {
+        const response = await API.get('/transactions/unfinished');
+        return response.data.data
+    }
+});
 
 export default function Shipping(props) {
     const navigate = useNavigate();
@@ -80,18 +86,21 @@ export default function Shipping(props) {
                 onSuccess: function (result) {
                     console.log(result);
                     window.dispatchEvent(new Event("badge"));
+                    refetch()
                     props.handleSuccess();
                     navigate('/profile');
                 },
                 onPending: function (result) {
                     console.log(result);
                     window.dispatchEvent(new Event("badge"));
+                    refetch()
                     props.handleSuccess();
                     navigate('/profile');
                 },
                 onError: function (result) {
                     console.log(result);
                     window.dispatchEvent(new Event("badge"));
+                    refetch()
                     props.handleSuccess();
                     navigate('/profile');
                 },

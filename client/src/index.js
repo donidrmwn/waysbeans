@@ -13,10 +13,6 @@ import { QueryClient, QueryClientProvider } from "react-query";
 
 
 
-//favicon
-// import Favicon from './assets/beans.png';
-// const favicon = document.getElementById('IdFavicon');
-// favicon.setAttribute('href',Favicon);
 const client = new QueryClient();
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
