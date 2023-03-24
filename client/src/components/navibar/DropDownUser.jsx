@@ -26,7 +26,7 @@ const style = {
 }
 
 export default function DropDownUser(props) {
-    console.log(props)
+    
 
     const [state, dispatch] = useContext(UserContext)
     let navigate = useNavigate();

@@ -49,7 +49,7 @@ export default function Navibar() {
 
 
     useEffect(() => {
-        //refetch();
+        refetch();
         window.addEventListener('badge', () => {
             refetch()
             refetchProfile()
