@@ -1,6 +1,4 @@
-import { ConvertFormatRupiah, ConvertFormatDate } from "../../utils";
-import { Card, Row, Col } from 'react-bootstrap'
-import Brand from "../../components/brand/Brand";
+
 import TransactionDetail from "./TransactionDetail";
 
 export default function ProfileTransactions({ transactions }) {
@@ -12,7 +10,7 @@ export default function ProfileTransactions({ transactions }) {
                 <>
                     {transactions?.map((transaction, index) => (
                         
-                        <div className="mb-3">
+                        <div key={index} className="mb-3">
                             <TransactionDetail index={index} transaction={transaction} />
                         </div>
                     ))}

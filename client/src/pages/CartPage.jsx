@@ -56,7 +56,7 @@ export default function CartPage() {
             const body = JSON.stringify(data)
             await API.patch('/cart/' + id, body, config);
             window.dispatchEvent(new Event("badge"))
-            
+
             setMessageCarts(null)
             refetchCarts()
             refetchTransaction()
@@ -66,7 +66,7 @@ export default function CartPage() {
                     {error.response.data.message}
                 </Alert>
             )
-            
+
             setMessageCarts(newAlert)
         }
     })
