@@ -42,11 +42,11 @@ export default function LandingPage() {
 
                         {!matches && (
                             <Col sm={12} lg="6" className="px-3 py-5 d-grid align-items-center">
-                                <h1 className="charlesSebastian" style={{ fontSize: "4em" }}  >
+                                <h1 className="charlesSebastian" style={{ fontSize: "3em" }}  >
                                     <Brand imgSize="40em" />
                                 </h1>
-                                <p className="fs-2 m-0 mb-3">BEST QUALITY COFFEE BEANS</p>
-                                <p className="fs-3 m-0">Quality freshly roasted coffee made just for you. Pour, brew and enjoy</p>
+                                <p className="fs-4 m-0 mb-3">BEST QUALITY COFFEE BEANS</p>
+                                <p className="fs-5 m-0">Quality freshly roasted coffee made just for you. Pour, brew and enjoy</p>
                             </Col>
 
                         )}
