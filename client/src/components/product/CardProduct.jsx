@@ -10,7 +10,7 @@ export default function CardProduct(props) {
     const navigate = useNavigate()
     return (
         <>
-            <Col key={props.index} >
+            <Col className="mb-4" sm={12} md={6} lg={3} key={props.index} >
                 <div as={Button} onClick={() => navigate('/product/' + props.product.id)} style={{ textDecoration: "none" }}>
                     <Card.Img onClick={() => props.onHide && props.onHide()} role="button" variant="top" src={`${props.product.image}`} />
                     <Card.Body className="p-2 " style={{ backgroundColor: "#F6E6DA" }}>
